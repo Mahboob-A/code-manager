@@ -49,6 +49,7 @@ LOCAL_APPS = [
     "core_apps.code_display",
     "core_apps.code_submit",
     "core_apps.code_result",
+    "core_apps.common",
 ]
 
 # installed apps
