@@ -43,6 +43,7 @@ THIRD_PARTH_APPS = [
     "rest_framework",
     "django_filters",
     "corsheaders",
+    "taggit", 
 ]
 
 LOCAL_APPS = [
