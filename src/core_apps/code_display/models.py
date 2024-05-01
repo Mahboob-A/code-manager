@@ -43,6 +43,7 @@ class Questions(TimeStampModel):
 
     # test case examples and constraints
     examples = models.TextField(verbose_name=_("Test Case Examples"), max_length=2000)
+    image = models.ImageField(verbose_name=_('Related Imgae to the Question'), upload_to='Questions/Images', blank=True)
     constraints = models.TextField(
         verbose_name=_("Question Constraints"), max_length=1000
     )
