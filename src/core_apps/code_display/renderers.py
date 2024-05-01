@@ -19,7 +19,6 @@ class QuestionJSONRenderer(JSONRenderer):
             errors = data.get("errors", None)
         else:
             errors = None
-
         # if there are errors, then render as per default JSON style. Pass if errors is None
         if errors is not None:
             return super(QuestionJSONRenderer, self).render(data)

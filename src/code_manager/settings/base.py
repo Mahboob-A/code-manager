@@ -12,20 +12,20 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
-import environ 
+import environ
 
 env = environ.Env()
 
 # Build paths inside the project like this: ROOT_DIR / 'subdir'.
 # this effectively pointing to the SRC dir where the manage.py file is located.
-ROOT_DIR = Path(__file__).resolve().parent.parent.parent 
+ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 
 # apps directory
-APP_DIR = ROOT_DIR / 'core_apps'
+APP_DIR = ROOT_DIR / "core_apps"
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool('DJANGO_DEBUG', False)
+DEBUG = env.bool("DJANGO_DEBUG", False)
 
 
 # Application definition
@@ -43,7 +43,8 @@ THIRD_PARTH_APPS = [
     "rest_framework",
     "django_filters",
     "corsheaders",
-    "taggit", 
+    "drf_yasg",
+    "taggit",
 ]
 
 LOCAL_APPS = [
@@ -59,6 +60,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTH_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",  # cors middleware
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -90,7 +92,7 @@ WSGI_APPLICATION = "code_manager.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-# for testing 
+# for testing
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -98,7 +100,7 @@ DATABASES = {
     }
 }
 
-# TODO set prod Database 
+# TODO set prod Database
 # DATABASES = {"default": env.db("DATABASE_URL")}
 
 
@@ -142,11 +144,11 @@ ADMIN_URL = "code-manager-admin/"
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-# static and media urls 
+# static and media urls
 STATIC_URL = "/static/"
 STATIC_ROOT = str(ROOT_DIR / "staticfiles")
 
-MEDIA_URL = "/mediafiles/"
+MEDIA_URL = "/media/"
 MEDIA_ROOT = str(ROOT_DIR / "mediafiles")
 
 
@@ -158,22 +160,21 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 ###############################################################
 
 #   Rest Framework Settings
-# TODO setup drf related config 
+# TODO setup drf related config
 REST_FRAMEWORK = {
-#     "DEFAULT_AUTHENTICATION_CLASSES": [
-#         "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
-#     ],
-#     "DEFAULT_PERMISSION_CLASSES": [
-#         "rest_framework.permissions.IsAuthenticated",
-#     ],
+    #     "DEFAULT_AUTHENTICATION_CLASSES": [
+    #         "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
+    #     ],
+    #     "DEFAULT_PERMISSION_CLASSES": [
+    #         "rest_framework.permissions.IsAuthenticated",
+    #     ],
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
 }
 
 
-
 CORS_URLS_REGEX = r"^api/.*$"
 
-# logging 
+# logging
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,

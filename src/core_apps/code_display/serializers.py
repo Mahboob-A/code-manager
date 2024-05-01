@@ -30,9 +30,58 @@ class CompanySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Companies
-        fields = ["id", "name", "description"]
+        fields = ["id", "title", "description"]
 
 
+class QuestionGETSerializer(serializers.ModelSerializer):
+    """'Seiralizer for Question Model"""
+
+    companies = CompanySerializer(
+        many=True,
+        read_only=True,
+    )
+    problem_number = serializers.IntegerField(source="pkid", read_only=True)
+    question_image = serializers.SerializerMethodField()
+    updated_at = serializers.SerializerMethodField()
+    created_at = serializers.SerializerMethodField()
+
+    tags = TaglistField()
+
+    def get_question_image(self, obj):
+        return obj.image.url if obj.image.url else None
+
+    def get_created_at(self, obj):
+        created_date = obj.created_at
+        formatted_date = created_date.strftime("%d/%m/%Y, %H:%M:%S")
+        return formatted_date
+
+    def get_updated_at(self, obj):
+        updated_date = obj.updated_at
+        formatted_date = updated_date.strftime("%d/%m/%Y, %H:%M:%S")
+        return formatted_date
+
+    class Meta:
+        model = Questions
+        fields = [
+            "id",
+            "problem_number",
+            "title",
+            "difficulty",
+            "description",
+            "examples",
+            "constraints",
+            "acceptance_rate",
+            "question_image",
+            "tags",
+            "companies",
+            "created_at",
+            "updated_at",
+        ]
+
+
+# the api will only be responsible for GET requests. POST/PUT will be handled from admin.
+# as the api is read-only, no need for POST and PUT operations.
+'''
 class QuestionSerializer(serializers.ModelSerializer):
     """'Seiralizer for Question Model"""
 
@@ -102,3 +151,6 @@ class QuestionSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
+
+
+'''
