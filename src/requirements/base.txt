@@ -5,6 +5,7 @@ django-cors-headers==3.14.0
 django-filter==22.1
 django-autoslug==1.9.8
 django-taggit==4.0.0
+drf-yasg==1.21.5
 pillow==9.4.0
 redis==4.5.1
 celery==5.2.7

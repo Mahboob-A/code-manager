@@ -10,6 +10,12 @@ from core_apps.code_display.models import Questions
 
 class CodeExecutionResult(TimeStampModel):
     """Model to store the result of code execution from RCEE Service."""
+    
+    LANGUAGE_CHOICES = [
+        ('py', 'Python'),
+        ('cpp',  'C++'),  
+        ('java',  'Java')
+    ]
 
     question = models.ForeignKey(
         Questions,
@@ -21,7 +27,7 @@ class CodeExecutionResult(TimeStampModel):
     user_id = models.UUIDField(verbose_name=_("User ID"))
     submission_id = models.UUIDField(verbose_name=_("Code Submission ID"))
     language = models.CharField(
-        verbose_name=_("Programming Language"), default="py", max_length=25
+        verbose_name=_("Programming Language"), default="py", max_length=25, choices=LANGUAGE_CHOICES
     )
 
     is_passed = models.BooleanField(

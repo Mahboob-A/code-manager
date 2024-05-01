@@ -36,6 +36,7 @@ class Questions(TimeStampModel):
     difficulty = models.IntegerField(
         verbose_name=_("Question Difficulty"), choices=DIFFICULTY_CHOICES
     )
+    acceptance_rate = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
 
     # deccriptions and test cases
     description = models.TextField(verbose_name=_("Questions Description"))
@@ -43,7 +44,11 @@ class Questions(TimeStampModel):
 
     # test case examples and constraints
     examples = models.TextField(verbose_name=_("Test Case Examples"), max_length=2000)
-    image = models.ImageField(verbose_name=_('Related Imgae to the Question'), upload_to='Questions/Images', blank=True)
+    image = models.ImageField(
+        verbose_name=_("Related Imgae to the Question"),
+        upload_to="Questions/Images",
+        default="Questions/Images/dsa.png",
+    )
     constraints = models.TextField(
         verbose_name=_("Question Constraints"), max_length=1000
     )

@@ -1,11 +1,12 @@
 from django.contrib import admin
 
-from core_apps.code_display.models import Questions, Companies 
+from core_apps.code_display.models import Questions, Companies
+
 
 @admin.register(Companies)
 class CompaniesAdmin(admin.ModelAdmin):
-    list_display = ['id', 'pkid', 'title', 'description']
-    list_display_links = ['id', 'pkid', 'title']
+    list_display = ["id", "pkid", "title", "description"]
+    list_display_links = ["id", "pkid", "title"]
 
 
 @admin.register(Questions)
@@ -19,14 +20,23 @@ class QuestionAdmin(admin.ModelAdmin):
     ordering = ["-created_at"]
     date_hierarchy = "created_at"
     fieldsets = [
-        ("Question Information", {"fields": ["title", ]}),
+        (
+            "Question Information",
+            {
+                "fields": [
+                    "title",
+                ]
+            },
+        ),
         (
             "Question Content",
             {
                 "fields": [
                     "description",
                     "test_cases",
+                    "acceptance_rate",
                     "difficulty",
+                    "image",
                 ]
             },
         ),
