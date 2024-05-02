@@ -45,6 +45,9 @@ urlpatterns = [
     
     # code_display app urls 
     path("api/v1/problems/", include("core_apps.code_display.urls")),
+ 
+    # code_submit app urls    
+    path('api/v1/code/', include('core_apps.code_submit.urls')), 
 ]
 
 
