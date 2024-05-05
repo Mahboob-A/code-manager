@@ -1,6 +1,10 @@
 import jwt
 import logging
-
+import uuid
+import time
+from os import getpid
+import hashlib
+import random
 
 logger = logging.getLogger(__name__)
 
@@ -37,15 +41,53 @@ def decode_jwt(request) -> dict:
         return None
 
 
-def generate_submission_id() -> str:
-    """Generates a UUID
+def generate_submission_id_hex() -> str:
+    """Generates a unique Hex ID
 
     Args:
         None
 
     Return:
-        A UUID4 string.
+        A SHA256 hex string.
     """
+    # current timestamp in milliseconds
+    timestamp = int(time.time() * 1000)
+
+    process_id = getpid()
+
+    uuid_int_key = uuid.uuid4().int
+
+    data = str(timestamp) + str(process_id) + str(uuid_int_key)
+
+    # hash the unique str
+    unique_id = hashlib.sha256(data.encode()).hexdigest()
+
+    # although the unique_id is not convertable to any uuid version, but it is much unique and hashed.
+    return unique_id
+
+
+def generate_submission_uuid() -> uuid.UUID:
+    """Generates a unique UUID combining current time, process id and a uuid int.
+
+    Args:
+        None
+
+    Return:
+        A UUID4 object.
+    """
+    # current time in milliseconds
+    timestamp = int(time.time() * 1000)
+
+    # process ID
+    process_id = getpid()
+
+    # take int of an uuid
+    random_number = uuid.uuid4().int
+
+    # generate a UUID
+    custom_uuid = uuid.UUID(int=(timestamp + process_id + random_number))
+    # print("uuid time: ", custom_uuid.node)
+    return custom_uuid
 
 
 if __name__ == "__main__":
