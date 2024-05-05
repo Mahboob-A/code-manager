@@ -9,6 +9,8 @@ from code_manager.settings.base import env
 
 
 def get_token(request) -> str:
+    """Returns the JWT token from header"""
+
     token = request.META.get("HTTP_AUTHORIZATION", " ").split(" ")[
         1
     ]  # split ["Bearer", 'token]
@@ -16,8 +18,7 @@ def get_token(request) -> str:
 
 
 def decode_jwt(request) -> dict:
-    """
-    Decodes a JWT token and returns the payload as a dictionary.
+    """Decodes a JWT token and returns the payload as a dictionary.
 
     Args:
     token: The JWT token string.
@@ -34,6 +35,17 @@ def decode_jwt(request) -> dict:
     except jwt.DecodeError:
         logger.warning("JWT signature verification failed")
         return None
+
+
+def generate_submission_id() -> str:
+    """Generates a UUID
+
+    Args:
+        None
+
+    Return:
+        A UUID4 string.
+    """
 
 
 if __name__ == "__main__":
