@@ -1,3 +1,4 @@
+# python
 import jwt
 import logging
 import uuid
@@ -6,10 +7,20 @@ from os import getpid
 import hashlib
 import random
 
-logger = logging.getLogger(__name__)
+# django
+from django.core.exceptions import ValidationError
+from django.conf import settings
 
+# other
+import boto3
+from boto3.exceptions import S3TransferFailedError, S3UploadFailedError
 
+# local
 from code_manager.settings.base import env
+from core_apps.code_display.models import Questions
+
+
+logger = logging.getLogger(__name__)
 
 
 def get_token(request) -> str:
@@ -37,8 +48,18 @@ def decode_jwt(request) -> dict:
         payload = jwt.decode(jwt=token, key=jwt_signing_key, algorithms=["HS256"])
         return payload  # payload has additional user details. see Auth Service's CustomTokenObtainPairSerializer
     except jwt.DecodeError:
-        logger.warning("JWT signature verification failed")
+        logger.error("\nJWT signature verification failed")
         return None
+
+
+# an example jwt claim
+"""
+{'token_type': 'access', 'exp': 1715259702, 'iat': 1714827702, 
+'jti': '39cc1a60e865449da642dcf0cafdad09', 
+'user_id': 'a0099fea-455b-409b-87d5-633dde71dca3', 
+'first_name': 'Kemal', 'last_name': 'Soydere', 'username': 'kemal_1', 
+'email': 'kemal1@gmail.com'} 
+"""
 
 
 def generate_submission_id_hex() -> str:
@@ -90,54 +111,109 @@ def generate_submission_uuid() -> uuid.UUID:
     return custom_uuid
 
 
+def process_data(request, problem_id) -> dict:
+    """Utility function to gather all the required data to upload to s3
+
+    Args:
+        HTTP Request object, Questions model id
+
+    Return:
+        A dict with user details from jwt claim, submission_uuid_id and testcases from Questions model.
+    """
+
+    # get the payload from jwt
+    payload = decode_jwt(request=request)
+
+    if payload is not None:
+        # user details from the payload
+        user_details = {
+            "user_id": payload.get("user_id"),
+            "username": payload.get("username"),
+            "email": payload.get("email"),
+        }
+
+        # generate a UUID for submission id
+        submission_id = generate_submission_uuid()
+
+        try:
+            problem_test_cases = Questions.objects.get(id=problem_id).test_cases
+        except (ValidationError, Questions.DoesNotExist):
+            logger.error(f"\nNo question available with the ID: {problem_id}")
+            return None, "problem_id_error"
+
+        data = {
+            "user": user_details,
+            "submission_id": str(
+                submission_id
+            ),  # submission_id is an object of UUID, convert obj it to str
+            "test_cases": problem_test_cases,
+        }
+        return data, "success"
+    else:
+        return None, "jwt_decode_error"
+
+
+class UploadToS3_2:
+    """Upload User Codes to S3 Bucket. Uses Sesstion to create s3 client."""
+
+    # also works. but need to use env files here to create session. The below UploadToS3 is alternate approach.
+    @classmethod
+    def __get_client(cls):
+        # using sesstion
+        session = boto3.Session(
+            aws_access_key_id=env("AWS_ACCESS_KEY_ID"),
+            aws_secret_access_key=env("AWS_SECRET_ACCESS_KEY"),
+        )
+        s3_client = session.client("s3")
+        return s3_client
+
+    @staticmethod
+    def upload_file(object_key, bytes_obj_data):  # objec_key = file name
+        """Upload file to the s3 bucket."""
+        s3_client = UploadToS3.__get_client()
+        bucket_name = env("AWS_STORAGE_BUCKET_NAME")
+
+        # use any of the follwoing method. both works well with bytes data.
+        # s3_client.put_object(Bucket=bucket_name, Key=object_key, Body=file_obj_data)
+
+        s3_client.upload_fileobj(bytes_obj_data, bucket_name, object_key)
+
+        # file url
+        file_url = f"https://{settings.AWS_S3_CUSTOM_DOMAIN}/{object_key}"
+        return file_url
+
+
+class UploadToS3:
+    """Upload user code and other data to s3 bucket."""
+
+    @classmethod
+    def __get_client(cls):
+        return boto3.client("s3")
+
+    @staticmethod
+    def upload_file(object_key, bytes_obj_data):
+        """Upload file to the s3 bucket."""
+
+        s3_client = UploadToS3.__get_client()
+        bucket_name = env("AWS_STORAGE_BUCKET_NAME")
+        try:
+            # use any of the follwoing method. both works well with bytes data.
+            # s3_client.put_object(Bucket=bucket_name, Key=object_key, Body=bytes_obj_data)
+
+            s3_client.upload_fileobj(bytes_obj_data, bucket_name, object_key)
+            file_url = f"https://{settings.AWS_S3_CUSTOM_DOMAIN}/{object_key}"
+            return file_url, "success"
+
+        except S3UploadFailedError as e:
+            logger.error(f"\n[X]: Error #Uploading User Code Files to S3: {e}")
+            return None, "error-data-handling-to-s3"
+        except S3TransferFailedError as e:
+            logger.error(f"\n[X]: Error #Transferring User Codes Files to S3: {e}")
+            return None, "error-data-handling-to-s3"
+        except Exception as e:
+            logger.error(f"\n[X]: Error #Handling User Codes Files to S3: {e}")
+            return None, "error-data-handling-to-s3"
+
+
 if __name__ == "__main__":
     pass
-
-
-# decode without jwt package (this way can not verify the signature)
-"""
-import base64
-import json
-# Assuming the token is in the token variable 
-token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwicGsiOiIxMDEiLCJjbGFzcyI6IlZJSUkiLCJzY2hvb2wiOiJwb3JpZGhpIiwiaWF0IjoxNTE2MjM5MDIyfQ.PBTrPfKnqDoAloaw8662vM6ajXhnjB2MwCkX3wZRKDs"
-# Split by dot and get middle, payload, part;
-token = token.split(".")
-header, token_payload, signature = token[0], token[1], token[2]
-
-token_payload_decoded = str(base64.b64decode(token_payload + "=="), "utf-8")
-
-payload = json.loads(token_payload_decoded)
-
-header_decoded = str(base64.b64decode(header+"=="), 'utf-8')
-print(header_decoded)
-
-
-name = payload["name"]
-
-#############
-
-# import base64
-# import json
-
-# def decode_jwt2(token: str):
-
-
-#     # Assuming the token is in the token variable
-#     token = (
-#         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIDIiLCJpYXQiOjE1MTYyMzkwMjJ9.3yw9-76uzuYlstomNB0mdb0ugEMSeicq8UMR34_UHW0"
-#     )
-#     # Split by dot and get middle, payload, part;
-#     token_payload = token.split(".")[1]
-#     # Payload is base64 encoded, let's decode it to plain string
-#     # To make sure decoding will always work - we're adding max padding ("==")
-#     # to payload - it will be ignored if not needed.
-#     token_payload_decoded = str(base64.b64decode(token_payload + "=="), "utf-8")
-#     # Payload is JSON - we can load it to dict for easy access
-#     payload = json.loads(token_payload_decoded)
-#     # And now we can access its' elements - e.g. name
-#     name = payload["name"]
-#     # Let's print it - it should show "John Doe"
-#     print(name)
-#     return payload
-
-"""
