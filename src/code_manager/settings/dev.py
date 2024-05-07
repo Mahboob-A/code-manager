@@ -17,8 +17,7 @@ CSRF_TRUSTED_ORIGINS = ["http://localhost:8080", "http://127.0.0.1:8080"]
 ALLOWED_HOSTS = ["127.0.0.1"]
 
 
-
-# Config for S3 to upload User Code Data to S3 Bucket from code-submit app. 
+# Config for S3 to upload User Code Data to S3 Bucket from code-submit app.
 AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
@@ -28,3 +27,12 @@ AWS_S3_OBJECT_PARAMETERS = {
     "CacheControl": "max-age=86400",
 }
 AWS_LOCATION = env("AWS_LOCATION")
+
+
+# Config for CloudAMQP
+CLOUD_AMQP_URL = env("CLOUD_AMQP_URL")
+EXCHANGE_NAME = env("EXCHANGE_NAME")
+EXCHANGE_TYPE = env("EXCHANGE_TYPE")
+QUEUE_NAME = env("QUEUE_NAME")
+BINDING_KEY = env("BINDING_KEY")
+ROUTING_KEY = env("ROUTING_KEY")

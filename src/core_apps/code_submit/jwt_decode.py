@@ -2,8 +2,8 @@
 import jwt
 import logging
 
-# local
-from code_manager.settings.base import env
+# django
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +38,7 @@ class DecodeJWT:
         """
         try:
             token = self.get_token(request=request)
-            jwt_signing_key = env("JWT_SIGNING_KEY")
+            jwt_signing_key = settings.JWT_SIGNING_KEY
             payload = jwt.decode(jwt=token, key=jwt_signing_key, algorithms=["HS256"])
             return payload  # payload has additional user details. see Auth Service's CustomTokenObtainPairSerializer
         except jwt.DecodeError:
@@ -46,5 +46,5 @@ class DecodeJWT:
             return None
 
 
-# instance to call 
+# instance to call
 jwt_decoder = DecodeJWT()

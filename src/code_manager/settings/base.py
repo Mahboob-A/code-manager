@@ -1,12 +1,12 @@
 from pathlib import Path
 from datetime import timedelta
 import environ
-import os 
+import os
 
 env = environ.Env()
 
 # TODO CHANGE {ENVIRONMENT_TYPE} to PROD Environment
-ENVIRONMENT_TYPE='.dev'
+ENVIRONMENT_TYPE = ".dev"
 
 # Build paths inside the project like this: ROOT_DIR / 'subdir'.
 # this effectively pointing to the SRC dir where the manage.py file is located.
@@ -30,10 +30,10 @@ APP_DIR = ROOT_DIR / "core_apps"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DJANGO_DEBUG")
-if DEBUG == "True": 
-    DEBUG = True 
-else: 
-    DEBUG = False 
+if DEBUG == "True":
+    DEBUG = True
+else:
+    DEBUG = False
 
 
 # Application definition
@@ -179,6 +179,8 @@ REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
 }
 
+# JWT Signing Key
+JWT_SIGNING_KEY = env("JWT_SIGNING_KEY")
 
 CORS_URLS_REGEX = r"^api/.*$"
 
@@ -210,5 +212,3 @@ LOGGING = {
     #     }
     # }
 }
-
-

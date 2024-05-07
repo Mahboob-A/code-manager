@@ -25,12 +25,10 @@ class ProcessData(DecodeJWT):
         Return:
             A UUID4 object.
         """
-        # milliseconds
+        # time in milliseconds
         timestamp = int(time.time() * 1000)
         process_id = getpid()
         random_number = uuid.uuid4().int
-        
-        # an unique UUID combining the current timestamp + the process id + the int of an uuid  
         custom_uuid = uuid.UUID(int=(timestamp + process_id + random_number))
         return custom_uuid
 
@@ -56,7 +54,7 @@ class ProcessData(DecodeJWT):
                 problem_test_cases = Questions.objects.get(id=problem_id).test_cases
             except (ValidationError, Questions.DoesNotExist):
                 logger.error(f"\n[X]: No question available with the ID: {problem_id}")
-                return None, "problem_id_error"
+                return None, "problem-id-error"
             data = {
                 "user": user_details,
                 "submission_id": str(
@@ -66,7 +64,7 @@ class ProcessData(DecodeJWT):
             }
             return data, "success"
         else:
-            return None, "jwt_decode_error"
+            return None, "jwt-decode-error"
 
 
 # instance to call 
