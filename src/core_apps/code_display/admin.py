@@ -33,7 +33,6 @@ class QuestionAdmin(admin.ModelAdmin):
             {
                 "fields": [
                     "description",
-                    "test_cases",
                     "acceptance_rate",
                     "difficulty",
                     "image",
@@ -44,7 +43,9 @@ class QuestionAdmin(admin.ModelAdmin):
             "Question Test Cases and Constraints",
             {
                 "fields": [
-                    "examples",
+                    "testcases_example",
+                    "testcases_inputs",
+                    "testcases_answers",
                     "constraints",
                 ]
             },
