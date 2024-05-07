@@ -57,7 +57,7 @@ class ProcessData(DecodeJWT):
                 problem_test_cases = Questions.objects.get(id=problem_id).test_cases
             except (ValidationError, Questions.DoesNotExist):
                 logger.error(f"\n[X]: No question available with the ID: {problem_id}")
-                return None, "problem_id_error"
+                return None, "problem-id-error"
             data = {
                 "user": user_details,
                 "submission_id": str(
@@ -67,7 +67,7 @@ class ProcessData(DecodeJWT):
             }
             return data, "success"
         else:
-            return None, "jwt_decode_error"
+            return None, "jwt-decode-error"
 
 
 # instance to call 
