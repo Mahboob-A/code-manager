@@ -49,7 +49,7 @@ class UploadToS3:
 class UploadToS3_2:
     """Upload User Codes to S3 Bucket. Uses Sesstion to create s3 client."""
 
-    # also works. but need to use env files here to create session. The below UploadToS3 is alternate approach.
+    # also works. but need to use env files here to create session. The upper UploadToS3 is an alternate approach.
     @classmethod
     def __get_client(cls):
         # using sesstion

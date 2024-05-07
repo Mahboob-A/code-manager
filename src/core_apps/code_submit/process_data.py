@@ -25,13 +25,12 @@ class ProcessData(DecodeJWT):
         Return:
             A UUID4 object.
         """
-        # current time in milliseconds
+        # milliseconds
         timestamp = int(time.time() * 1000)
-        # process ID
         process_id = getpid()
-        # take int of an uuid
         random_number = uuid.uuid4().int
-        # generate an unique UUID
+        
+        # an unique UUID combining the current timestamp + the process id + the int of an uuid  
         custom_uuid = uuid.UUID(int=(timestamp + process_id + random_number))
         return custom_uuid
 
@@ -43,7 +42,7 @@ class ProcessData(DecodeJWT):
         Return:
             A dict with user details from jwt claim, submission_uuid_id and testcases from Questions model.
         """
-        # get the payload from jwt
+        # the payload from jwt
         payload = self.decode_jwt(request=request)
         if payload is not None:
             user_details = {
@@ -51,7 +50,7 @@ class ProcessData(DecodeJWT):
                 "username": payload.get("username"),
                 "email": payload.get("email"),
             }
-            # generate a UUID for submission id
+            # an UUID for submission id
             submission_id = self.generate_submission_uuid()
             try:
                 problem_test_cases = Questions.objects.get(id=problem_id).test_cases
