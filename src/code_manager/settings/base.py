@@ -205,10 +205,10 @@ LOGGING = {
         "handlers": ["console"],
     },
     # uncomment for django database query logs
-    # 'loggers': {
-    #     'django.db': {
-    #         'level': 'DEBUG',
-    #         'handlers': ['console'],
-    #     }
-    # }
+    "loggers": {
+        "django.db": {
+            "level": "DEBUG",
+            "handlers": ["console"],
+        }
+    },
 }
