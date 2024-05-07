@@ -40,10 +40,13 @@ class Questions(TimeStampModel):
 
     # deccriptions and test cases
     description = models.TextField(verbose_name=_("Questions Description"))
-    test_cases = models.TextField(verbose_name=_("Test Cases"))
+    testcases_inputs = models.TextField(verbose_name=_("Complete Test Cases"))
+    testcases_answers = models.TextField(verbose_name=_("Complete Test Cases Answers"))
 
     # test case examples and constraints
-    examples = models.TextField(verbose_name=_("Test Case Examples"), max_length=2000)
+    testcases_example = models.TextField(
+        verbose_name=_("A Few Test Case Examples"), max_length=2000
+    )
     image = models.ImageField(
         verbose_name=_("Related Imgae to the Question"),
         upload_to="Questions/Images",

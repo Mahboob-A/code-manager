@@ -51,7 +51,9 @@ class ProcessData(DecodeJWT):
             # an UUID for submission id
             submission_id = self.generate_submission_uuid()
             try:
-                problem_test_cases = Questions.objects.get(id=problem_id).test_cases
+                testcases_inputs, testcases_answers = Questions.objects.values_list(
+                    "testcases_inputs", "testcases_answers"
+                ).get(id=problem_id)
             except (ValidationError, Questions.DoesNotExist):
                 logger.error(f"\n[X]: No question available with the ID: {problem_id}")
                 return None, "problem-id-error"
@@ -60,12 +62,13 @@ class ProcessData(DecodeJWT):
                 "submission_id": str(
                     submission_id
                 ),  # submission_id is an object of UUID, convert obj it to str
-                "test_cases": problem_test_cases,
+                "testcase_inputs": testcases_inputs,
+                "testcase_answers": testcases_answers,
             }
             return data, "success"
         else:
             return None, "jwt-decode-error"
 
 
-# instance to call 
+# instance to call
 data_processor = ProcessData()
