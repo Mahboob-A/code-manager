@@ -25,13 +25,10 @@ class ProcessData(DecodeJWT):
         Return:
             A UUID4 object.
         """
-        # current time in milliseconds
+        # time in milliseconds
         timestamp = int(time.time() * 1000)
-        # process ID
         process_id = getpid()
-        # take int of an uuid
         random_number = uuid.uuid4().int
-        # generate an unique UUID
         custom_uuid = uuid.UUID(int=(timestamp + process_id + random_number))
         return custom_uuid
 
