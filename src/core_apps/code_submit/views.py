@@ -17,7 +17,10 @@ from rest_framework.views import APIView
 import boto3
 
 # local
-from core_apps.code_submit.utils import jwt_decoder, s3_data_processor, s3_data_uploader
+from core_apps.code_submit.jwt_decode import jwt_decoder
+from core_apps.code_submit.process_data import data_processor
+from core_apps.code_submit.s3_handler import s3_data_uploader
+
 
 logger = logging.getLogger(__name__)
 
@@ -59,7 +62,7 @@ class SubmitCode(APIView):
         lang = request.data.get("lang")
 
         # process the data that needs to be uploaded in the s3 bucket.
-        data, message = s3_data_processor.process_data(
+        data, message = data_processor.process_data(
             request=request, problem_id=problem_id
         )
         if data is not None:
@@ -78,10 +81,10 @@ class SubmitCode(APIView):
                 object_key=object_key, bytes_obj_data=bytes_obj_data
             )
 
-            # file_url == s3 upload success 
+            # file_url == s3 upload success
             if file_url is not None:
                 logger.info(
-                    f"\n[S]: The User Code Files with Object Key: '{object_key}' Successfully Uploaded to S3."
+                    f"\n[SUCCESS]: The User Code Files with Object Key: '{object_key}' Successfully Uploaded to S3."
                 )
                 pass
             else:
