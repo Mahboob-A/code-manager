@@ -115,7 +115,7 @@ class SubmitCode(APIView):
                     )
                 else:
                     # s3 data link publish to MQ failed. delete s3 data link from s3 bucket
-                    s3_data_handler.delete_uploaded_file(object_key)
+                    s3_data_handler.delete_uploaded_file(object_key=object_key)
                     return self.process_error_response(message=message)
             else: 
                 # data upload to s3 failed.

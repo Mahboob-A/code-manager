@@ -146,7 +146,7 @@ USE_TZ = True
 SITE_ID = 1
 
 # admin url
-ADMIN_URL = "code-manager-admin/"
+ADMIN_URL = env("ADMIN_URL")
 
 
 # Static files (CSS, JavaScript, Images)
