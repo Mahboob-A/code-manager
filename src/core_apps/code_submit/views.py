@@ -75,6 +75,9 @@ class SubmitCode(APIView):
             request=request, problem_id=problem_id
         )
         if data is not None:
+            submission_id = data.get("submission_id")
+
+            # create unique file name
             now = int(time.time())
             username = data["user"].get("username")
 
@@ -103,7 +106,10 @@ class SubmitCode(APIView):
                     )
                     return Response(
                         {
-                            "detail": "Your response has been submitted.",
+                            "result": {
+                                "detail": "Your response has been submitted.",
+                                "submission_id": submission_id,
+                            }
                         },
                         status=status.HTTP_200_OK,
                     )

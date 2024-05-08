@@ -40,7 +40,7 @@ class ProcessData(DecodeJWT):
         Return:
             A dict with user details from jwt claim, submission_uuid_id and testcases from Questions model.
         """
-        # get the payload from jwt
+        # the payload from jwt
         payload = self.decode_jwt(request=request)
         if payload is not None:
             user_details = {
@@ -48,7 +48,7 @@ class ProcessData(DecodeJWT):
                 "username": payload.get("username"),
                 "email": payload.get("email"),
             }
-            # generate a UUID for submission id
+            # an UUID for submission id
             submission_id = self.generate_submission_uuid()
             try:
                 testcases_inputs, testcases_answers = Questions.objects.values_list(
