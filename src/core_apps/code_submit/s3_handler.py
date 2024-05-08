@@ -10,11 +10,10 @@ from boto3.exceptions import S3TransferFailedError, S3UploadFailedError
 from botocore.exceptions import ClientError, UnknownEndpointError, UnknownKeyError
 
 
-
 logger = logging.getLogger(__name__)
 
 
-class UploadToS3:
+class S3DataHandler:
     """Upload user code and other data to s3 bucket."""
 
     def __get_client(self):
@@ -31,16 +30,25 @@ class UploadToS3:
 
             s3_client.upload_fileobj(bytes_obj_data, bucket_name, object_key)
             file_url = f"https://{settings.AWS_S3_CUSTOM_DOMAIN}/{object_key}"
+            logger.info(
+                f"\n[S3 SUCCESS]: The User Code Files with Object Key: '{object_key}' Successfully Uploaded to S3."
+            )
             return file_url, "success"
 
         except S3UploadFailedError as e:
-            logger.error(f"\n[X]: Error #Uploading User Code Files to S3: {e}")
+            logger.error(
+                f"\n[S3: ERROR]: Error #Uploading Object Key - '{object_key}' to S3: {e}"
+            )
             return None, "error-data-handling-to-s3"
         except S3TransferFailedError as e:
-            logger.error(f"\n[X]: Error #Transferring User Codes Files to S3: {e}")
+            logger.error(
+                f"\n[S3 ERROR]: Error #Transferring Object Key - '{object_key}' to S3: {e}"
+            )
             return None, "error-data-handling-to-s3"
         except Exception as e:
-            logger.error(f"\n[X]: Error #Handling User Codes Files to S3: {e}")
+            logger.exception(
+                f"\n[S3 ERROR]: Error #Handling Object Key - '{object_key}' to S3: {e}"
+            )
             return None, "error-data-handling-to-s3"
 
     def delete_uploaded_file(self, object_key: str) -> None:
@@ -49,10 +57,12 @@ class UploadToS3:
             s3_client = self.__get_client()
             bucket_name = settings.AWS_STORAGE_BUCKET_NAME
             s3_client.delete_object(Bucket=bucket_name, Key=object_key)
-            logger.info(f"\n[SUCCESS] The Object Key {object_key} has been deleted.")
-        except (ClientError, UnknownEndpointError, UnknownKeyError) as e:
+            logger.info(
+                f"\n[S3 SUCCESS] The Object Key {object_key} has been DELETED."
+            )
+        except (ClientError, UnknownEndpointError, UnknownKeyError, Exception) as e:
             logger.exception(
-                f"\n[X]: Error Occurred During File Deletion from S3\n[EXCEPTION]: {str(e)}"
+                f"\n[S3 ERROR]: Error Occurred During File Deletion from S3\n[S3 EXCEPTION]: {str(e)}"
             )
 
 
@@ -76,7 +86,7 @@ class UploadToS3_2:
     @staticmethod
     def upload_file(object_key, bytes_obj_data):  # objec_key = file name
         """Upload file to the s3 bucket."""
-        s3_client = UploadToS3.__get_client()
+        s3_client = UploadToS3_2.__get_client()
         bucket_name = settings.AWS_STORAGE_BUCKET_NAME
 
         # use any of the follwoing method. both works well with bytes data.
@@ -90,4 +100,4 @@ class UploadToS3_2:
 
 
 # instance to call
-s3_data_uploader = UploadToS3()
+s3_data_handler = S3DataHandler()

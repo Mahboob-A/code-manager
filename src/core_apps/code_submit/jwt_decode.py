@@ -42,7 +42,7 @@ class DecodeJWT:
             payload = jwt.decode(jwt=token, key=jwt_signing_key, algorithms=["HS256"])
             return payload  # payload has additional user details. see Auth Service's CustomTokenObtainPairSerializer
         except jwt.DecodeError:
-            logger.error("\n[X]: JWT signature verification failed")
+            logger.error("\n[JWT ERROR]: JWT signature verification failed")
             return None
 
 
