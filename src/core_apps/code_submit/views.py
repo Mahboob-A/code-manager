@@ -19,7 +19,6 @@ import boto3
 # local
 from core_apps.code_submit.jwt_decode import jwt_decoder
 from core_apps.code_submit.process_data import data_processor
-from core_apps.code_submit.s3_handler import s3_data_handler
 from core_apps.code_submit.mq_producer import mq_publisher
 
 
@@ -70,7 +69,7 @@ class SubmitCode(APIView):
         problem_id = request.data.get("problem_id")
         lang = request.data.get("lang")
 
-        # process the data that needs to be uploaded in the s3 bucket.
+        # process the data that needs to be publish to the MQ. 
         data, message = data_processor.process_data(
             request=request, problem_id=problem_id, lang=lang
         )
@@ -97,5 +96,5 @@ class SubmitCode(APIView):
             else:
                 return self.process_error_response(message=message)
         else:
-            # jwt and fetch question details in data process failed.
+            # jwt or fetch question details in data process failed.
             return self.process_error_response(message=message, problem_id=problem_id)
