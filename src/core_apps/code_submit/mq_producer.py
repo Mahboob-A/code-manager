@@ -37,7 +37,7 @@ class CloudAMQPHealper:
 class DataPublisherMQ(CloudAMQPHealper):
     """Interface class to publish data to MQ"""
 
-    def publish_data(self, uploaded_s3_data_link: str, object_key: str) -> None:
+    def publish_data(self, json_data: json, username: str) -> None:
         # connect to mq and prepare exchange and queue
 
         try:
@@ -46,17 +46,19 @@ class DataPublisherMQ(CloudAMQPHealper):
             self.channel.basic_publish(
                 exchange=settings.EXCHANGE_NAME,
                 routing_key=settings.ROUTING_KEY,
-                body=uploaded_s3_data_link,
+                body=json_data,
             )
             logger.info(
-                f"\n[MQ SUCCESS]: The User Code Files with Object Key: '{object_key}' Successfully Published to MQ."
+                f"\n[MQ SUCCESS]: The User Code Files of: '{username}' Successfully Published to MQ."
             )
-            return True, "success"
+            message = "success"
+            return True, message
         except Exception as e:
             logger.exception(
-                f"\n[MQ ERROR]: The User Code Files with Object Key: '{object_key}' Could not be published to MQ.\n[MQ EXCEPTION]: {str(e)}"
+                f"\n[MQ ERROR]: The User Code Files of: '{username}' Could not be published to MQ.\n[MQ EXCEPTION]: {str(e)}"
             )
-            return None, "error-publishing-to-mq"
+            message = "error-publishing-to-mq"
+            return False, message
 
 
 # instance to call

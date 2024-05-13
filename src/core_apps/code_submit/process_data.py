@@ -33,7 +33,7 @@ class ProcessData(DecodeJWT):
         return custom_uuid
 
     # main entrypoint of processing data.
-    def process_data(self, request, problem_id) -> dict:
+    def process_data(self, request, problem_id: str, lang: str) -> dict:
         """Utility function to gather all the required data to upload to s3
         Args:
             HTTP Request object, Questions model id
@@ -56,17 +56,21 @@ class ProcessData(DecodeJWT):
                 ).get(id=problem_id)
             except (ValidationError, Questions.DoesNotExist):
                 message = "problem-id-error"
-                logger.error(f"\n[DATA PROCESS ERROR]: No question available with the ID: {problem_id}")
+                logger.error(
+                    f"\n[DATA PROCESS ERROR]: No question available with the ID: {problem_id}"
+                )
                 return None, message
             data = {
-                "user": user_details,
+                "user_details": user_details,
                 "submission_id": str(
                     submission_id
                 ),  # submission_id is an object of UUID, convert obj it to str
+                "lang": lang,
                 "testcase_inputs": testcases_inputs,
                 "testcase_answers": testcases_answers,
             }
-            return data, "success"
+            message = "success"
+            return data, message
         else:
             message = "jwt-decode-error"
             logger.error(
