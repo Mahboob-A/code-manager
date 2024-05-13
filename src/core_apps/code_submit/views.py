@@ -19,7 +19,6 @@ import boto3
 # local
 from core_apps.code_submit.jwt_decode import jwt_decoder
 from core_apps.code_submit.process_data import data_processor
-from core_apps.code_submit.s3_handler import s3_data_handler
 from core_apps.code_submit.mq_producer import mq_publisher
 
 
@@ -65,61 +64,37 @@ class SubmitCode(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
-    def create_unique_object_key(self, data, lang):
-        """Create an Unique filename for S3 Upload"""
-        now = int(time.time())
-        username = data["user"].get("username")
-        file_prefix = f"{username}-{now}-{lang}"
-        object_key = f"codes/{file_prefix}-data.txt"
-        return object_key
-
-    def s3_upload(self, data, object_key):
-        """Upload to S3"""
-        data = json.dumps(data)
-        bytes_obj_data = io.BytesIO(data.encode())
-        # Upload to S3
-        s3_file_url, message = s3_data_handler.upload_file_to_s3(
-            object_key=object_key, bytes_obj_data=bytes_obj_data
-        )
-        return s3_file_url, message
-
     def post(self, request, format=None):
         """Decode JWT, get user details. Get Testcases from DB. Upload data to S3. Push FIle Link to MQ"""
         problem_id = request.data.get("problem_id")
         lang = request.data.get("lang")
 
-        # process the data that needs to be uploaded in the s3 bucket.
+        # process the data that needs to be publish to the MQ. 
         data, message = data_processor.process_data(
-            request=request, problem_id=problem_id
+            request=request, problem_id=problem_id, lang=lang
         )
         if data is not None:
             submission_id = data.get("submission_id")
 
-            object_key = self.create_unique_object_key(data=data, lang=lang)
-            s3_file_url, message = self.s3_upload(data=data, object_key=object_key)
+            username = data["user_details"].get("username")
+            data = json.dumps(data) 
 
-            # s3_file_url == s3 upload success. publish to mq
-            if s3_file_url is not None:
-                published, message = mq_publisher.publish_data(
-                    uploaded_s3_data_link=s3_file_url, object_key=object_key
+            # publish to MQ
+            published, message = mq_publisher.publish_data(
+                json_data=data, username=username
+            )
+            if published:
+                return Response(
+                    {
+                        "result": {
+                            "detail": "Your response has been submitted.",
+                            "submission_id": submission_id,
+                        }
+                    },
+                    status=status.HTTP_200_OK,
                 )
-                if published:
-                    return Response(
-                        {
-                            "result": {
-                                "detail": "Your response has been submitted.",
-                                "submission_id": submission_id,
-                            }
-                        },
-                        status=status.HTTP_200_OK,
-                    )
-                else:
-                    # s3 data link publish to MQ failed. delete s3 data link from s3 bucket
-                    s3_data_handler.delete_uploaded_file(object_key=object_key)
-                    return self.process_error_response(message=message)
-            else: 
-                # data upload to s3 failed.
+            else:
                 return self.process_error_response(message=message)
-        else: 
-            # jwt and fetch question details in data process failed.
+        else:
+            # jwt or fetch question details in data process failed.
             return self.process_error_response(message=message, problem_id=problem_id)
