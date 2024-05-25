@@ -33,7 +33,7 @@ class ProcessData(DecodeJWT):
         return custom_uuid
 
     # main entrypoint of processing data.
-    def process_data(self, request, problem_id: str, lang: str) -> dict:
+    def process_data(self, request, problem_id: str, lang: str, code: str) -> dict:
         """Utility function to gather all the required data to upload to s3
         Args:
             HTTP Request object, Questions model id
@@ -66,8 +66,9 @@ class ProcessData(DecodeJWT):
                     submission_id
                 ),  # submission_id is an object of UUID, convert obj it to str
                 "lang": lang,
-                "testcase_inputs": testcases_inputs,
-                "testcase_answers": testcases_answers,
+                "code": code,
+                "inputs": testcases_inputs,
+                "testcases": testcases_answers,
             }
             message = "success"
             return data, message

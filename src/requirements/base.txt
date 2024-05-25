@@ -2,7 +2,6 @@ django==4.2.11
 django-environ==0.10.0
 djangorestframework==3.14.0
 django-cors-headers==3.14.0
-boto3==1.34.98
 django-filter==22.1
 django-autoslug==1.9.8
 django-taggit==4.0.0
