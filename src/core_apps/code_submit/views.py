@@ -68,16 +68,17 @@ class SubmitCode(APIView):
         """Decode JWT, get user details. Get Testcases from DB. Upload data to S3. Push FIle Link to MQ"""
         problem_id = request.data.get("problem_id")
         lang = request.data.get("lang")
+        code = request.data.get("code")
 
-        # process the data that needs to be publish to the MQ. 
+        # process the data that needs to be publish to the MQ.
         data, message = data_processor.process_data(
-            request=request, problem_id=problem_id, lang=lang
+            request=request, problem_id=problem_id, lang=lang, code=code
         )
         if data is not None:
             submission_id = data.get("submission_id")
 
             username = data["user_details"].get("username")
-            data = json.dumps(data) 
+            data = json.dumps(data)
 
             # publish to MQ
             published, message = mq_publisher.publish_data(
