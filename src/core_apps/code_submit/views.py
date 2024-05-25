@@ -19,7 +19,7 @@ import boto3
 # local
 from core_apps.code_submit.jwt_decode import jwt_decoder
 from core_apps.code_submit.process_data import data_processor
-from core_apps.code_submit.mq_producer import mq_publisher
+from core_apps.code_submit.code_submission_producer import code_submission_publisher_mq
 
 
 logger = logging.getLogger(__name__)
@@ -81,8 +81,8 @@ class SubmitCode(APIView):
             data = json.dumps(data)
 
             # publish to MQ
-            published, message = mq_publisher.publish_data(
-                json_data=data, username=username
+            published, message = code_submission_publisher_mq.publish_data(
+                user_code_data=data, username=username
             )
             if published:
                 return Response(
