@@ -17,7 +17,7 @@ from rest_framework.views import APIView
 import boto3
 
 # local
-from core_apps.code_submit.jwt_decode import jwt_decoder
+from core_apps.common.jwt_decode import jwt_decoder
 from core_apps.code_submit.process_data import data_processor
 from core_apps.code_submit.code_submission_producer import code_submission_publisher_mq
 

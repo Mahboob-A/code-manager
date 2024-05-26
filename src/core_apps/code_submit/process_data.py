@@ -10,13 +10,20 @@ from django.core.exceptions import ValidationError
 
 # local
 from core_apps.code_display.models import Questions
-from core_apps.code_submit.jwt_decode import DecodeJWT
+from core_apps.common.jwt_decode import jwt_decoder
 
 logger = logging.getLogger(__name__)
 
 
-class ProcessData(DecodeJWT):
-    """Process Data Util Class. Returns Payload from JWT and Testcases from Questions Model."""
+class ProcessData:
+    """Process Data Util Class. 
+        Return Extracted Data from JWT Payload
+        Testcases and Inputs from Questions Model
+        
+        Return: 
+            Dict: 
+                data{jwt_data:{}, problem_data{}}
+    """
 
     def generate_submission_uuid(self) -> uuid.UUID:
         """Generates a unique UUID combining current time, process id and a uuid int.
@@ -41,7 +48,7 @@ class ProcessData(DecodeJWT):
             A dict with user details from jwt claim, submission_uuid_id and testcases from Questions model.
         """
         # the payload from jwt
-        payload = self.decode_jwt(request=request)
+        payload = jwt_decoder.decode_jwt(request=request)
         if payload is not None:
             user_details = {
                 "user_id": payload.get("user_id"),
