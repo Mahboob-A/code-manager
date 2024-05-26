@@ -48,6 +48,9 @@ urlpatterns = [
  
     # code_submit app urls    
     path('api/v1/code/', include('core_apps.code_submit.urls')), 
+    
+    # code_result app urls 
+    path('api/v1/result/', include('core_apps.code_result.urls')),
 ]
 
 
