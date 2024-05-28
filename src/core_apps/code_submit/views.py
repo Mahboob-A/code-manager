@@ -38,11 +38,26 @@ class SubmitCode(APIView):
     """Submit Code to the code-manager service"""
 
     def process_error_response(self, message: str, problem_id: str = None) -> Response:
+        if message == "jwt-header-malformed":
+            return Response(
+                {
+                    "detail": "The JWT Authorization Header is missing or header is malformed."
+                },
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
         if message == "jwt-decode-error":
             return Response(
                 {"detail": "The JWT Token could not be verified"},
-                status=status.HTTP_400_BAD_REQUEST,
+                status=status.HTTP_401_UNAUTHORIZED,
             )
+
+        if message == "jwt-signature-expired":
+            return Response(
+                {"detail": "The JWT Signature is expired. Renew the JWT Token"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
         if message == "problem-id-error":
             return Response(
                 {"detail": f"The problem id {problem_id} is not valid."},
