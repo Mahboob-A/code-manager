@@ -48,7 +48,7 @@ class ProcessData:
             A dict with user details from jwt claim, submission_uuid_id and testcases from Questions model.
         """
         # the payload from jwt
-        payload = jwt_decoder.decode_jwt(request=request)
+        payload, message = jwt_decoder.decode_jwt(request=request)
         if payload is not None:
             user_details = {
                 "user_id": payload.get("user_id"),
@@ -80,7 +80,6 @@ class ProcessData:
             message = "success"
             return data, message
         else:
-            message = "jwt-decode-error"
             logger.error(
                 f"\n[DATA PROCESS ERROR]: Data could not be processed. The error is: {message}"
             )
