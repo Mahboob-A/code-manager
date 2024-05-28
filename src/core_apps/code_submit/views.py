@@ -51,10 +51,16 @@ class SubmitCode(APIView):
                 {"detail": "The JWT Token could not be verified"},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
-
+            
         if message == "jwt-signature-expired":
             return Response(
                 {"detail": "The JWT Signature is expired. Renew the JWT Token"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+        
+        if message == "jwt-general-exception": 
+            return Response(
+                {"detail": "Some error occurred during decoding the JWT token."},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 

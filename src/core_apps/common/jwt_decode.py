@@ -56,7 +56,8 @@ class DecodeJWT:
         except (DecodeError, InvalidSignatureError, InvalidTokenError) as e:
             logger.error(f"\n[JWT ERROR]: JWT signature verification failed.\n[EXCEPTION]: {str(e)}")
             return None, "jwt-decode-error"
-
+        except Exception as e: 
+            return None, "jwt-general-exception"
 
 # instance to call
 jwt_decoder = DecodeJWT()
