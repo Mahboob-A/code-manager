@@ -17,7 +17,7 @@ services:
       - ./.envs/.dev/.postgres
     depends_on: 
       - postgres 
-      - redis
+      - code-manager-redis
     command: /start  # start command to start the dev server and consume messages from mq 
     networks: 
       - algocode-code-manager-network
@@ -36,7 +36,7 @@ services:
     networks: 
       - algocode-code-manager-network
       
-  redis: 
+  code-manager-redis: 
     image: redis:7-alpine
     networks: 
       - algocode-code-manager-network

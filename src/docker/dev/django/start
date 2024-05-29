@@ -9,5 +9,5 @@ set -o nounset
 python manage.py makemigrations --no-input 
 python manage.py migrate --no-input 
 python manage.py collectstatic --no-input 
-exec python manage.py runserver 0.0.0.0:8000 # run the dev server 
-exec python manage.py consume_messages  # start consuming messages 
+python manage.py runserver 0.0.0.0:8000 & # run the dev server 
+python manage.py consume_messages  # start consuming messages 
