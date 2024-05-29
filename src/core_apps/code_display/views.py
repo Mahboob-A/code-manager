@@ -1,26 +1,26 @@
 # python
 import logging
 
-# django
-from django.shortcuts import render, get_object_or_404
 from django.http import Http404
+
+# django
+from django.shortcuts import get_object_or_404, render
 
 # django filters
 from django_filters.rest_framework import DjangoFilterBackend
 
 # drf
 from rest_framework import filters, generics, status
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+
+from core_apps.code_display.filters import QuestionFilter
 
 # locals
 from core_apps.code_display.models import Questions
-from core_apps.code_display.filters import QuestionFilter
-from core_apps.code_display.serializers import QuestionGETSerializer
 from core_apps.code_display.paginations import QuestionPageNumberPagination
 from core_apps.code_display.renderers import QuestionJSONRenderer, QuestionsJSONRenderer
-
-
+from core_apps.code_display.serializers import QuestionGETSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -39,24 +39,24 @@ class QuestionListAPIView(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
 
 
+class QuestionDetailAPIView(generics.RetrieveAPIView):
+    """API for a singel Question retrival"""
 
-class QuestionDetailAPIView(generics.RetrieveAPIView): 
-    '''API for a singel Question retrival'''
     queryset = Questions.objects.all()
     serializer_class = QuestionGETSerializer
     permission_classes = [AllowAny]
     renderer_classes = [QuestionJSONRenderer]
 
-    lookup_field = 'id'
+    lookup_field = "id"
 
     def retrieve(self, request, *args, **kwargs):
-        try: 
+        try:
             instance = self.get_object()
-        except Http404: 
-            questioin_id = self.kwargs.get('id')
-            logger.warning(f'[x]: Question with id: {questioin_id} does not found.')
+        except Http404:
+            questioin_id = self.kwargs.get("id")
+            logger.warning(f"[x]: Question with id: {questioin_id} does not found.")
             return Response(
-                    {'detail': 'Question does not found'}, status=status.HTTP_404_NOT_FOUND
+                {"detail": "Question does not found"}, status=status.HTTP_404_NOT_FOUND
             )
         serializer = self.get_serializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)

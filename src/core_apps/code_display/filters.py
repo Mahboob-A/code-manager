@@ -14,4 +14,3 @@ class QuestionFilter(FilterSet):
     class Meta:
         model = Questions
         fields = ["title", "tags", "created_at", "updated_at"]
-

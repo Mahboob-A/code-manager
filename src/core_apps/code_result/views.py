@@ -1,17 +1,18 @@
 # python
-import time, logging, json
-
-# django
-from django.core.exceptions import ImproperlyConfigured
-
-
-# drf
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.views import APIView
+import json
+import logging
+import time
 
 # others
 import redis
+
+# django
+from django.core.exceptions import ImproperlyConfigured
+from rest_framework import status
+
+# drf
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 # local
 from core_apps.common.jwt_decode import jwt_decoder
@@ -45,12 +46,17 @@ class CodeExecutionResultAPI(APIView):
         retry_interval: float = 0.1
         start_time: time = time.time()
 
-        # implement get data from db, in case data not found in cache. 
+        # implement get data from db, in case data not found in cache.
         while time.time() - start_time < timeout:
             result: json = redis_client.get(submission_id)
             if result:
                 result_data: dict = json.loads(result)
-                return Response({"status": "success", "data": result_data},status=status.HTTP_200_OK)
+                return Response(
+                    {"status": "success", "data": result_data},
+                    status=status.HTTP_200_OK,
+                )
             time.sleep(retry_interval)
 
-        return Response({"status": "pending", "data": None}, status=status.HTTP_202_ACCEPTED)
+        return Response(
+            {"status": "pending", "data": None}, status=status.HTTP_202_ACCEPTED
+        )

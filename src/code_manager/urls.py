@@ -15,14 +15,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.contrib import admin
-from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-
+from django.contrib import admin
+from django.urls import include, path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
-
 from rest_framework.permissions import AllowAny
 
 # service documentation
@@ -42,15 +40,12 @@ doc_schema_view = get_schema_view(
 urlpatterns = [
     path("redoc/", doc_schema_view.with_ui("redoc", cache_timeout=0)),
     path(settings.ADMIN_URL, admin.site.urls),
-    
-    # code_display app urls 
+    # code_display app urls
     path("api/v1/problems/", include("core_apps.code_display.urls")),
- 
-    # code_submit app urls    
-    path('api/v1/code/', include('core_apps.code_submit.urls')), 
-    
-    # code_result app urls 
-    path('api/v1/result/', include('core_apps.code_result.urls')),
+    # code_submit app urls
+    path("api/v1/code/", include("core_apps.code_submit.urls")),
+    # code_result app urls
+    path("api/v1/result/", include("core_apps.code_result.urls")),
 ]
 
 

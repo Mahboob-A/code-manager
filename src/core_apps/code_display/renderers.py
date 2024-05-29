@@ -1,7 +1,9 @@
 import json
+
 from rest_framework.renderers import JSONRenderer
 
-# for detaileview 
+
+# for detaileview
 class QuestionJSONRenderer(JSONRenderer):
     """Defalut renderer class for single Question object."""
 

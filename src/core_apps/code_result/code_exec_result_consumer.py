@@ -1,12 +1,14 @@
 # python
-import os, json, logging
+import json
+import logging
+import os
 from typing import Callable
-
-# django
-from django.conf import settings
 
 # pika
 import pika
+
+# django
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -42,8 +44,9 @@ class CloudAMQPHandler:
 
 class CodeEXECResultConsumerMQ(CloudAMQPHandler):
     """Interface class to publish data to MQ
-        Consume Code Execution Result from Result Queue [Published by RCE Engine Service]
+    Consume Code Execution Result from Result Queue [Published by RCE Engine Service]
     """
+
     def consume_messages(self, callback: Callable) -> None:
         try:
             self.connect()

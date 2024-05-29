@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from core_apps.code_display.models import Questions, Companies
+from core_apps.code_display.models import Companies, Questions
 
 
 @admin.register(Companies)

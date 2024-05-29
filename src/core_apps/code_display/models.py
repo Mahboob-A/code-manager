@@ -1,7 +1,6 @@
+from autoslug import AutoSlugField
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-
-from autoslug import AutoSlugField
 from taggit.managers import TaggableManager
 
 from core_apps.common.models import TimeStampModel

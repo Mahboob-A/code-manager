@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
-
-from core_apps.code_display.models import Questions, Companies
+from core_apps.code_display.models import Companies, Questions
 from core_apps.code_result.models import CodeExecutionResult
 
 

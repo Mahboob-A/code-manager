@@ -1,7 +1,9 @@
-import json, traceback, logging, time
+import json
+import logging
+import time
+import traceback
 
 import redis
-
 from django.core.exceptions import ImproperlyConfigured
 
 # # MQ Code Execution Result Consume
@@ -33,7 +35,6 @@ def callback(channel, method, properties, body):
         # body is in bytes. decodes to str then as dict
         result_data = json.loads(body.decode("utf-8"))
         print("\n\nResult Data In Code Manager: ", result_data)
-        
 
         # Save the result in cache  for immediate polling
         submission_id = result_data.get("submission_id")

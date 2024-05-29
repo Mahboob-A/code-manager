@@ -1,18 +1,20 @@
 # python
-import os, json, logging
-
-# django
-from django.conf import settings
+import json
+import logging
+import os
 
 # pika
 import pika
+
+# django
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
 
 class CloudAMQPHandler:
-    """CloudAMQP Helper Class to Declare Exchange and Queue 
-        for Code Submission Publication
+    """CloudAMQP Helper Class to Declare Exchange and Queue
+    for Code Submission Publication
     """
 
     def __init__(self) -> None:
@@ -40,8 +42,7 @@ class CloudAMQPHandler:
 
 
 class CodeSubmissionPublisherMQ(CloudAMQPHandler):
-    """Interface Class to Publish Message to Publish Code Submission Queue
-    """
+    """Interface Class to Publish Message to Publish Code Submission Queue"""
 
     def publish_data(self, user_code_data: json, username: str) -> None:
         # connect to mq and prepare exchange and queue
@@ -52,7 +53,7 @@ class CodeSubmissionPublisherMQ(CloudAMQPHandler):
             self.channel.basic_publish(
                 exchange=settings.CODE_SUBMISSION_EXCHANGE_NAME,
                 routing_key=settings.CODE_SUBMISSION_ROUTING_KEY,
-                body=user_code_data
+                body=user_code_data,
             )
             logger.info(
                 f"\n[MQ SUCCESS]: The User Code Files of UN: '{username}' Successfully Published to Submission MQ."

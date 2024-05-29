@@ -1,9 +1,10 @@
 # python
-import jwt
 import logging
-import uuid
 import time
+import uuid
 from os import getpid
+
+import jwt
 
 # django
 from django.core.exceptions import ValidationError
@@ -16,13 +17,13 @@ logger = logging.getLogger(__name__)
 
 
 class ProcessData:
-    """Process Data Util Class. 
-        Return Extracted Data from JWT Payload
-        Testcases and Inputs from Questions Model
-        
-        Return: 
-            Dict: 
-                data{jwt_data:{}, problem_data{}}
+    """Process Data Util Class.
+    Return Extracted Data from JWT Payload
+    Testcases and Inputs from Questions Model
+
+    Return:
+        Dict:
+            data{jwt_data:{}, problem_data{}}
     """
 
     def generate_submission_uuid(self) -> uuid.UUID:
