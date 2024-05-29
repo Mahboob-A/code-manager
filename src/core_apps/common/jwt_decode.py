@@ -49,7 +49,8 @@ class DecodeJWT:
                 return None, "jwt-header-malformed"            
             jwt_signing_key = settings.JWT_SIGNING_KEY
             payload = jwt.decode(jwt=token, key=jwt_signing_key, algorithms=["HS256"])
-            return payload  # payload has additional user details. see Auth Service's CustomTokenObtainPairSerializer
+            message = "success"
+            return payload, message  # payload has additional user details. see Auth Service's CustomTokenObtainPairSerializer
         except ExpiredSignatureError as e: 
             logger.error(f"\n[JWT ERROR]: JWT signature is Expired.\n[EXCEPTION]: {str(e)}")
             return None, "jwt-signature-expired"

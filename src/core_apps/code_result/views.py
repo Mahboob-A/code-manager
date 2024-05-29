@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 
 try:
-    redis_client = redis.Redis(host="127.0.0.1", port=6379, db=0)
+    redis_client = redis.Redis(host="code-manager-redis", port=6379, db=0)
 except (ImproperlyConfigured, Exception) as e:
     logger.exception(
         f"\n[Redis Import Error]: Error Occurred During Importing Reids\n[EXCEPTION]: {str(e)}"

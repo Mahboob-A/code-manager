@@ -68,7 +68,7 @@ class QuestionGETSerializer(serializers.ModelSerializer):
             "title",
             "difficulty",
             "description",
-            "examples",
+            "testcases_example",
             "constraints",
             "acceptance_rate",
             "question_image",

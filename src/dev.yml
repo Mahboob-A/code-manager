@@ -1,0 +1,70 @@
+# 280524, Monday, 6.00 pm
+
+services: 
+  code-manager: 
+    restart: always 
+    build: 
+      context: . 
+      dockerfile: ./docker/dev/django/Dockerfile
+    volumes: 
+      - .:/app:z 
+      - static_volume:/app/staticfiles
+      - media_volume:/app/mediafiles 
+    expose: 
+      - "8000"
+    env_file: 
+      - ./.envs/.dev/.django
+      - ./.envs/.dev/.postgres
+    depends_on: 
+      - postgres 
+      - code-manager-redis
+    command: /start  # start command to start the dev server and consume messages from mq 
+    networks: 
+      - algocode-code-manager-network
+
+  postgres: 
+    build: 
+      context: . 
+      dockerfile: ./docker/dev/postgres/Dockerfile
+    volumes: 
+      - dev_postgres_data:/var/lib/postgresql/data
+      - dev_postgres_data_backups:/backups
+    env_file: 
+      - ./.envs/.dev/.postgres 
+    ports:
+      - 5432:5432 
+    networks: 
+      - algocode-code-manager-network
+      
+  code-manager-redis: 
+    image: redis:7-alpine
+    networks: 
+      - algocode-code-manager-network
+
+  nginx: 
+    build: 
+      context: . 
+      dockerfile: ./docker/dev/nginx/Dockerfile
+    restart: always
+    depends_on: 
+      - code-manager
+    volumes: 
+      - static_volume:/app/staticfiles
+      - media_volume:/app/mediafiles 
+    ports: 
+      - "8080:80"
+    networks: 
+      - algocode-code-manager-network
+  
+networks: 
+  algocode-code-manager-network: 
+    driver: bridge
+  
+
+volumes: 
+  static_volume: 
+  media_volume: 
+  dev_postgres_data: {}
+  dev_postgres_data_backups: {}
+
+  

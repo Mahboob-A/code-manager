@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 try:
-    r = redis.Redis()
+    r = redis.Redis(host="code-manager-redis", port=6379, db=0)
 except (ImproperlyConfigured, Exception) as e:
     logger.exception(
         f"\n[Redis Import Error]: Error Occurred During Importing Reids\n[EXCEPTION]: {str(e)}"
@@ -35,10 +35,6 @@ def callback(channel, method, properties, body):
         print("\n\nResult Data In Code Manager: ", result_data)
         
 
-        # TODO Remove teh sleep in prod. It is only to demonstrate the long polling
-        # sleep to demonstrate the long polling. 
-        # time.sleep(25)
-        
         # Save the result in cache  for immediate polling
         submission_id = result_data.get("submission_id")
         r.set(submission_id, json.dumps(result_data))
