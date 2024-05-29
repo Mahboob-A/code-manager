@@ -1,4 +1,4 @@
-code-manager-admin
+#!/usr/bin/env bash 
 
 # get the currect file address
 work_dir="$(dirname ${0})"

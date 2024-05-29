@@ -10,7 +10,7 @@ from core_apps.common.models import TimeStampModel
 class Companies(TimeStampModel):
     """Company names to map the questions by companies"""
 
-    title = models.CharField(verbose_name=_("Question Title"), max_length=255)
+    title = models.CharField(verbose_name=_("Company Title"), max_length=255)
     description = models.CharField(
         verbose_name=_("Company Description"), max_length=255, blank=True
     )

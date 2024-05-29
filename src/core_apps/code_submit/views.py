@@ -13,8 +13,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 
-# others
-import boto3
 
 # local
 from core_apps.common.jwt_decode import jwt_decoder
@@ -25,17 +23,19 @@ from core_apps.code_submit.code_submission_producer import code_submission_publi
 logger = logging.getLogger(__name__)
 
 
-class TestAPI(APIView):
-    """Test API to test the JWT token payload."""
+# class TestAPI(APIView):
+#     """Test API to test the JWT token payload."""
 
-    def get(self, request, format=None):
-        payload = jwt_decoder.decode_jwt(request=request)
-        logging.info(f"\npayload is: {payload}")  # dict
-        return Response({"ok"})
+#     def get(self, request, format=None):
+#         payload = jwt_decoder.decode_jwt(request=request)
+#         logging.info(f"\npayload is: {payload}")  # dict
+#         return Response({"ok"})
 
 
 class SubmitCode(APIView):
-    """Submit Code to the code-manager service"""
+    """Submit Code to the code-manager service. 
+        The API creates an event and pushes the user codes to MQ for further processing by RCE Engine
+    """
 
     def process_error_response(self, message: str, problem_id: str = None) -> Response:
         if message == "jwt-header-malformed":
@@ -86,7 +86,20 @@ class SubmitCode(APIView):
             )
 
     def post(self, request, format=None):
-        """Decode JWT, get user details. Get Testcases from DB. Upload data to S3. Push FIle Link to MQ"""
+        ''''Entrypoint for code submission from user. Creates an event to MQ for 
+            RCE Engine to execute the user submitted code.  
+            
+            Event Message Body: 
+                a. user details b. testcases from db c. user submitted code d. submission id  
+            
+            Return: 
+                - submission id 
+                - messge 
+                    - success
+                    - error 
+        '''
+        # Decode JWT, get user details. Get Testcases from DB. Push FIle Link to MQ
+        
         problem_id = request.data.get("problem_id")
         lang = request.data.get("lang")
         code = request.data.get("code")

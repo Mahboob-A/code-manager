@@ -1,8 +1,7 @@
-version: "3.9"
 # 280524, Monday, 6.00 pm
 
 services: 
-  auth-service: 
+  code-manager: 
     restart: always 
     build: 
       context: . 
@@ -21,7 +20,7 @@ services:
       - redis
     command: /start  # start command to start the dev server and consume messages from mq 
     networks: 
-      - algocode-backend-auth-network
+      - algocode-code-manager-network
 
   postgres: 
     build: 
@@ -35,12 +34,12 @@ services:
     ports:
       - 5432:5432 
     networks: 
-      - algocode-backend-auth-network
+      - algocode-code-manager-network
       
   redis: 
     image: redis:7-alpine
     networks: 
-      - algocode-backend-auth-network
+      - algocode-code-manager-network
 
   nginx: 
     build: 
@@ -48,17 +47,17 @@ services:
       dockerfile: ./docker/dev/nginx/Dockerfile
     restart: always
     depends_on: 
-      - auth-service
+      - code-manager
     volumes: 
       - static_volume:/app/staticfiles
       - media_volume:/app/mediafiles 
     ports: 
       - "8080:80"
     networks: 
-      - algocode-backend-auth-network
+      - algocode-code-manager-network
   
 networks: 
-  algocode-backend-auth-network: 
+  algocode-code-manager-network: 
     driver: bridge
   
 

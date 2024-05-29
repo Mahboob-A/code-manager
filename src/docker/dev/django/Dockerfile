@@ -51,11 +51,14 @@ RUN sed -i 's/\r$//g' /entrypoint
 RUN chmod +x /entrypoint 
 
 # start script is to start the dev server and consuming messages 
-COPY ./docker/dev/django/start /app/docker/dev/django/start 
+# COPY ./docker/dev/django/start.sh /app/docker/dev/django/start.sh
+COPY ./docker/dev/django/start /start
 
-RUN sed -i 's/\r$//g' /app/docker/dev/django/start
+# RUN sed -i 's/\r$//g' /app/docker/dev/django/start.sh
+RUN sed -i 's/\r$//g' /start
 
-RUN chmod +x /app/docker/dev/django/start
+# RUN chmod +x /app/docker/dev/django/start.sh
+RUN chmod +x /start
 
 COPY . ${APP_HOME}
 
