@@ -1,24 +1,24 @@
 # python
-import logging
 import io
 import json
+import logging
 import time
+
+from django.conf import settings
 
 # django
 from django.shortcuts import render
-from django.conf import settings
+from rest_framework import status
 
 # drf
 from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.views import APIView
 
+from core_apps.code_submit.code_submission_producer import code_submission_publisher_mq
+from core_apps.code_submit.process_data import data_processor
 
 # local
 from core_apps.common.jwt_decode import jwt_decoder
-from core_apps.code_submit.process_data import data_processor
-from core_apps.code_submit.code_submission_producer import code_submission_publisher_mq
-
 
 logger = logging.getLogger(__name__)
 
@@ -33,8 +33,8 @@ logger = logging.getLogger(__name__)
 
 
 class SubmitCode(APIView):
-    """Submit Code to the code-manager service. 
-        The API creates an event and pushes the user codes to MQ for further processing by RCE Engine
+    """Submit Code to the code-manager service.
+    The API creates an event and pushes the user codes to MQ for further processing by RCE Engine
     """
 
     def process_error_response(self, message: str, problem_id: str = None) -> Response:
@@ -51,14 +51,14 @@ class SubmitCode(APIView):
                 {"detail": "The JWT Token could not be verified"},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
-            
+
         if message == "jwt-signature-expired":
             return Response(
                 {"detail": "The JWT Signature is expired. Renew the JWT Token"},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
-        
-        if message == "jwt-general-exception": 
+
+        if message == "jwt-general-exception":
             return Response(
                 {"detail": "Some error occurred during decoding the JWT token."},
                 status=status.HTTP_401_UNAUTHORIZED,
@@ -86,20 +86,20 @@ class SubmitCode(APIView):
             )
 
     def post(self, request, format=None):
-        ''''Entrypoint for code submission from user. Creates an event to MQ for 
-            RCE Engine to execute the user submitted code.  
-            
-            Event Message Body: 
-                a. user details b. testcases from db c. user submitted code d. submission id  
-            
-            Return: 
-                - submission id 
-                - messge 
-                    - success
-                    - error 
-        '''
+        """Entrypoint for code submission from user. Creates an event to MQ for
+        RCE Engine to execute the user submitted code.
+
+        Event Message Body:
+            a. user details b. testcases from db c. user submitted code d. submission id
+
+        Return:
+            - submission id
+            - messge
+                - success
+                - error
+        """
         # Decode JWT, get user details. Get Testcases from DB. Push FIle Link to MQ
-        
+
         problem_id = request.data.get("problem_id")
         lang = request.data.get("lang")
         code = request.data.get("code")
@@ -126,7 +126,7 @@ class SubmitCode(APIView):
                             "submission_id": submission_id,
                         }
                     },
-                    status=status.HTTP_200_OK,
+                    status=status.HTTP_201_CREATED,
                 )
             else:
                 return self.process_error_response(message=message)

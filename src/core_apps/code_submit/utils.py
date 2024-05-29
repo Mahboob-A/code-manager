@@ -1,10 +1,9 @@
 # python
-import logging
-import uuid
-import time
-from os import getpid
 import hashlib
-
+import logging
+import time
+import uuid
+from os import getpid
 
 logger = logging.getLogger(__name__)
 
@@ -26,8 +25,3 @@ def generate_submission_id_hex() -> str:
     unique_id = hashlib.sha256(data.encode()).hexdigest()
     # although the unique_id is not convertable to any uuid version, but it is much unique and hashed.
     return unique_id
-
-
-
-
-
