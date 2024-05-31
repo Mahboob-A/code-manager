@@ -3,7 +3,7 @@ set -e
 
 # 290524, Wednesday 
 # this script is being used to create a custom user and db name using the default superuser postgres and custom db postgres
-# it has come conditions, the data should be empty to run the script. 
+# the below script has some conditions, the data should be empty to run the script. 
 # see more on this link at: [Initialization scripts] section. Link: https://hub.docker.com/_/postgres?tab=description
 
 psql -v ON_ERROR_STOP=1 --username postgres --dbname postgres <<-EOSQL
