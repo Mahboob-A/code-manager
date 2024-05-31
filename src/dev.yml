@@ -15,6 +15,7 @@ services:
     env_file: 
       - ./.envs/.dev/.django
       - ./.envs/.dev/.postgres
+      - ./.envs/.dev/.mongo
     depends_on: 
       - postgres 
       - code-manager-redis
@@ -34,6 +35,21 @@ services:
     ports:
       - 5432:5432 
     networks: 
+      - algocode-code-manager-network
+  
+  mongodb:
+    build:
+      context: .
+      dockerfile: ./docker/dev/mongodb/Dockerfile
+    env_file:
+      - ./.envs/.dev/.mongo
+    volumes:
+      - dev_mongo_data:/data/db
+      - dev_mongo_logs:/var/log/mongodb.log
+    ports:
+      - "27017:27017"
+    command: mongod --dbpath /data/db 
+    networks:
       - algocode-code-manager-network
       
   code-manager-redis: 
@@ -66,5 +82,7 @@ volumes:
   media_volume: 
   dev_postgres_data: {}
   dev_postgres_data_backups: {}
+  dev_mongo_data: {}
+  dev_mongo_logs: {}
 
   
