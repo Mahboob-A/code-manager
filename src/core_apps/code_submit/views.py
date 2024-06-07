@@ -37,7 +37,7 @@ class SubmitCode(APIView):
     The API creates an event and pushes the user codes to MQ for further processing by RCE Engine
     """
 
-    def process_error_response(self, message: str, problem_id: str = None) -> Response:
+    def process_error_response(self, message: str, problem_id: str = None, lang: str = None) -> Response:
         if message == "jwt-header-malformed":
             return Response(
                 {
@@ -84,6 +84,13 @@ class SubmitCode(APIView):
                 },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+        if message == 'invalid-language-error': 
+            return Response(
+                {
+                    "detail": f"The language '{lang}' is invalid.\nOnly 'cpp' and 'java' are supported as of now in Algocode.\nPass the lang as either 'cpp' or 'java'. "
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
     def post(self, request, format=None):
         """Entrypoint for code submission from user. Creates an event to MQ for
@@ -104,6 +111,17 @@ class SubmitCode(APIView):
         lang = request.data.get("lang")
         code = request.data.get("code")
 
+        if not isinstance(lang, str): 
+            message = 'invalid-language-error'
+            return self.process_error_response(message=message)
+
+        # NOTE making the lang universally lowercase. 
+        lang = lang.lower()
+        
+        if lang not in ['cpp', 'java']: 
+            message = 'invalid-language-error'
+            return self.process_error_response(message=message)
+
         # process the data that needs to be publish to the MQ.
         data, message = data_processor.process_data(
             request=request, problem_id=problem_id, lang=lang, code=code
@@ -115,8 +133,8 @@ class SubmitCode(APIView):
             data = json.dumps(data)
 
             # publish to MQ
-            published, message = code_submission_publisher_mq.publish_data(
-                user_code_data=data, username=username
+            published, message  = code_submission_publisher_mq.publish_data(
+                user_code_data=data, username=username, lang=lang
             )
             if published:
                 return Response(

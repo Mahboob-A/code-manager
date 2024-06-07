@@ -8,6 +8,8 @@ from core_apps.code_display.models import Questions
 from core_apps.common.models import TimeStampModel
 
 
+# NOTE: To save the code execution result, MongoDB is used. Relational DB i.e. postgres is not used. 
+# Hence, below model is stale.  
 class CodeExecutionResult(TimeStampModel):
     """Model to store the result of code execution from RCEE Service."""
 
