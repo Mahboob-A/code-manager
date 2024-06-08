@@ -81,19 +81,18 @@ class CodeSubmissionPublisherMQ(CloudAMQPHandler):
                     routing_key=settings.JAVA_CODE_SUBMISSION_ROUTING_KEY,
                     body=user_code_data,
                 )
-
+                
             logger.info(
-                f"\n[MQ SUCCESS]: The User Code Files of UseName: '{username}' of Language: '{lang}' Successfully Published to Submission MQ."
+                f"\n[MQ Code Submission Publish SUCCESS]: The User Code Files of UseName: '{username}' of Language: '{lang}' Successfully Published to Submission MQ."
             )
             message = "success"
             return True, message
         except Exception as e:
             logger.exception(
-                f"\n[MQ ERROR]: The User Code Files of UN: '{username}' of Language: '{lang}' Could not be published to Submission MQ.\n[MQ EXCEPTION]: {str(e)}"
+                f"\n[MQ Code Submission Publish ERROR]: The User Code Files of UN: '{username}' of Language: '{lang}' Could not be published to Submission MQ.\n[MQ EXCEPTION]: {str(e)}"
             )
             message = "error-publishing-to-code-submission-mq"
             return False, message
-
 
 # instance to call
 code_submission_publisher_mq = CodeSubmissionPublisherMQ()
