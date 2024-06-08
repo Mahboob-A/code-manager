@@ -4,6 +4,8 @@ Settings to connect with MondoDB Database running in same Docker Network.
 '''
 
 from pymongo import MongoClient
+
+# settings/production 
 from django.conf import settings
 
 MONGO_HOST = settings.MONGO_HOST
