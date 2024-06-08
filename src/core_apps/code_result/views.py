@@ -17,16 +17,20 @@ from rest_framework.views import APIView
 from db_connection import mongo_result_collection
 
 # others
-import redis
+from redis import Redis 
 
 logger = logging.getLogger(__name__)
 
 
 try:
-    redis_client = redis.Redis(host="code-manager-redis", port=6379, db=0)
+    redis_client = Redis(
+        host=settings.REDIS_CACHE_HOST,
+        port=6379,
+        db=settings.REDIS_CACHE_RESULT_DB_INDEX,  # result cache index is 0, rate limit index is 1. 
+    )
 except (ImproperlyConfigured, Exception) as e:
     logger.exception(
-        f"\n[Redis Import Error]: Error Occurred During Importing Reids\n[EXCEPTION]: {str(e)}"
+        f"\n[Redis Import Error]: Error Occurred During Importing Reids at CodeExecutionResultAPI\n[EXCEPTION]: {str(e)}"
     )
     raise ImproperlyConfigured("Redis is not available")
 
@@ -51,8 +55,9 @@ class CodeExecutionResultAPI(APIView):
                 name=submission_id, value=json.dumps(db_result)
             )  # save the data as json (dict to json)
             redis_client.expire(
-                name=submission_id, time=settings.REDIS_CACHE_TIME_IN_SECONDS
-            ) # currently 15 seconds 
+                name=submission_id,
+                time=settings.REDIS_CODE_EXEC_RESULT_CACHE_TIME_IN_SECONDS,
+            )  # currently 15 seconds
             return db_result
         return None
 

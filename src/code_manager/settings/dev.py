@@ -22,7 +22,23 @@ ALLOWED_HOSTS = ["127.0.0.1"]
 
 
 # Time to cache the code execution result in redis
-REDIS_CACHE_TIME_IN_SECONDS = int(env("REDIS_CACHE_TIME_IN_SECONDS"))
+REDIS_CACHE_HOST = env("REDIS_CACHE_HOST")
+
+REDIS_CACHE_RATELIMIT_DB_INDEX = int(env("REDIS_CACHE_RATELIMIT_DB_INDEX"))
+REDIS_CACHE_RESULT_DB_INDEX = int(env("REDIS_CACHE_RESULT_DB_INDEX"))
+
+# cache timeout for code exec result
+REDIS_CODE_EXEC_RESULT_CACHE_TIME_IN_SECONDS = int(
+    env("REDIS_CODE_EXEC_RESULT_CACHE_TIME_IN_SECONDS")
+)
+
+# cache timeout for code submit api rate limit
+REDIS_RATE_LIMIT_CACHE_TIME_IN_SECONDS = int(
+    env("REDIS_RATE_LIMIT_CACHE_TIME_IN_SECONDS")
+)
+
+# Code Submit API path. 
+CODE_SUBMIT_API_PATH = "/api/v1/code/submit/"
 
 # Config for MQ: Code Submission Publish
 CLOUD_AMQP_URL = env("CLOUD_AMQP_URL")

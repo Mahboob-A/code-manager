@@ -76,6 +76,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "core_apps.code_submit.RateLimitMiddleware.CodeSubmitAPIRateLimitMiddleware", # middleware for rate limiting. (3 requsts per 60 sec)
 ]
 
 ROOT_URLCONF = "code_manager.urls"
@@ -184,4 +185,3 @@ REST_FRAMEWORK = {
 JWT_SIGNING_KEY = env("JWT_SIGNING_KEY")
 
 CORS_URLS_REGEX = r"^api/.*$"
-
