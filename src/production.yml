@@ -1,0 +1,95 @@
+# 280524, Monday, 6.00 pm
+
+services: 
+  code-manager: 
+    restart: always 
+    build: 
+      context: . 
+      dockerfile: ./docker/production/django/Dockerfile
+    image: api-codemanager-image
+    volumes: 
+      - production_codemanager_api_static_volume:/app/staticfiles
+      - production_codemanager_api_media_volume:/app/mediafiles 
+    env_file: 
+      - ./.envs/.production/.django
+      - ./.envs/.production/.postgres
+      - ./.envs/.production/.mongo
+    depends_on: 
+      - postgres 
+      - codemanager-cache-redis
+    command: /start  # start command to start the server and consume messages from mq 
+    networks: 
+      - production-codemanager-network
+
+  postgres: 
+    build: 
+      context: . 
+      dockerfile: ./docker/production/postgres/Dockerfile
+    image: postgres-codemanger-image
+    volumes: 
+      - production_codemanager_postgres_data:/var/lib/postgresql/data
+      - production_codemanager_postgres_data_backups:/backups
+    env_file: 
+      - ./.envs/.production/.postgres 
+    ports:
+      - 5432:5432 
+    networks: 
+      - production-codemanager-network
+  
+  mongodb:
+    build:
+      context: .
+      dockerfile: ./docker/production/mongodb/Dockerfile
+    image: mongodb-codemanager-image
+    env_file:
+      - ./.envs/.production/.mongo
+    volumes:
+      - production_codemanager_mongo_data:/data/db
+      - production_codemanager_mongo_logs:/var/log/mongodb.log
+    ports:
+      - "27017:27017"
+    command: mongod --dbpath /data/db 
+    networks:
+      - production-codemanager-network
+    
+  # Using a single redis instance for result cache and rate limiting as the server is limited on 1GB ram. 
+  # But if scale is needed, create another redis instance for rate limiting and update the Middleware. 
+  codemanager-cache-redis: 
+    image: redis:7-alpine
+    networks: 
+      - production-codemanager-network
+
+
+  # NOTE for testing the produciton stage locally only. Nginx Proxy Manager is used in Production.  
+  # nginx: 
+  #   build: 
+  #     context: . 
+  #     dockerfile: ./docker/production/nginx/Dockerfile
+  #   restart: always
+  #   depends_on: 
+  #     - code-manager
+  #   volumes: 
+  #     - static_volume:/app/staticfiles
+  #     - media_volume:/app/mediafiles 
+  #   ports: 
+  #     - "8080:80"
+  #   networks: 
+  #     - production-codemanager-network
+
+  
+# TODO Create the ' production-codemanager-network ' network in the server. 
+networks: 
+  production-codemanager-network: 
+    external: true 
+  
+
+volumes: 
+  production_codemanager_api_static_volume: {} 
+  production_codemanager_api_media_volume: {} 
+  production_codemanager_postgres_data: {}
+  production_codemanager_postgres_data_backups: {}
+  production_codemanager_mongo_data: {}
+  production_codemanager_mongo_logs: {}
+
+
+  

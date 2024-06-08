@@ -13,3 +13,6 @@ python /home/codemanager/app/manage.py collectstatic --no-input
 
 # Run with gunicorn. 
 exec /usr/local/bin/gunicorn code_manager.wsgi:application --bind 0.0.0.0:8001 --chdir=/home/codemanager/app/ & python /home/codemanager/app/manage.py consume_messages 
+
+#  for testing the production locally with reload  
+# exec /usr/local/bin/gunicorn code_manager.wsgi:application --bind 0.0.0.0:8001 --chdir=/home/codemanager/app/ --reload & python /home/codemanager/app/manage.py consume_messages 

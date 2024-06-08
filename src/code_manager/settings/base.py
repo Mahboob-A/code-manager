@@ -156,10 +156,10 @@ ADMIN_URL = env("ADMIN_URL")
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 # static and media urls
-STATIC_URL = "/static/"
+STATIC_URL = "/staticfiles/"
 STATIC_ROOT = str(ROOT_DIR / "staticfiles")
 
-MEDIA_URL = "/media/"
+MEDIA_URL = "/mediafiles/"
 MEDIA_ROOT = str(ROOT_DIR / "mediafiles")
 
 
