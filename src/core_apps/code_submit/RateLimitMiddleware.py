@@ -52,6 +52,7 @@ class CodeSubmitAPIRateLimitMiddleware:
             ip_addr = x_forwarded_for.split(",")[0]
         else:
             ip_addr = request.META.get("REMOTE_ADDR")
+        print('\n\nX_FORWARDED_FOR: ', x_forwarded_for)
         return ip_addr
 
     def process_view(self, request, view_func, view_args, view_kwargs):

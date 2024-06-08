@@ -60,20 +60,18 @@ RUN pip install --no-cache-dir --no-index --find-links=/wheels/ /wheels/* \
 
 
 # entrypoint script is to check db status. copy as user 
-COPY --chown=codemanager:codemanager ./docker/dev/django/entrypoint /entrypoint
+COPY --chown=codemanager:codemanager ./docker/production/django/entrypoint /entrypoint
 
 RUN sed -i 's/\r$//g' /entrypoint
 
 # checks the postgres db availability 
 RUN chmod +x /entrypoint 
 
-# start script is to start the dev server and consuming messages 
-COPY --chown=codemanager:codemanager ./docker/dev/django/start /start
+# start script is to start the production server using gunicorn on port 8001 and consuming messages 
+COPY --chown=codemanager:codemanager ./docker/production/django/start /start
 
-# RUN sed -i 's/\r$//g' /app/docker/dev/django/start.sh
 RUN sed -i 's/\r$//g' /start
 
-# RUN chmod +x /app/docker/dev/django/start.sh
 RUN chmod +x /start
 
 COPY --chown=codemanager:codemanager . ${APP_HOME}

@@ -59,6 +59,23 @@ services:
     networks: 
       - production-codemanager-network
 
+
+  # NOTE for testing the produciton stage locally only. Nginx Proxy Manager is used in Production.  
+  # nginx: 
+  #   build: 
+  #     context: . 
+  #     dockerfile: ./docker/production/nginx/Dockerfile
+  #   restart: always
+  #   depends_on: 
+  #     - code-manager
+  #   volumes: 
+  #     - static_volume:/app/staticfiles
+  #     - media_volume:/app/mediafiles 
+  #   ports: 
+  #     - "8080:80"
+  #   networks: 
+  #     - production-codemanager-network
+
   
 # TODO Create the ' production-codemanager-network ' network in the server. 
 networks: 
@@ -73,5 +90,6 @@ volumes:
   production_codemanager_postgres_data_backups: {}
   production_codemanager_mongo_data: {}
   production_codemanager_mongo_logs: {}
+
 
   
