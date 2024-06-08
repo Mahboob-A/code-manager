@@ -27,17 +27,17 @@ class CloudAMQPHandler:
 
     def prepare_exchange_and_queue(self, lang: str) -> None:
 
-        # exchange declare based on lang type. 
+        # NOTE exchange declare based on lang type. to mitigate fault tolerant, isolation, and potential scalability, 
+        # two separate exchanges have been used. If singe exchage is used, and somehow it failes, 
+        # all the routing for all the queue will be stopped.  Hence, for potential fault tolerant, using two separate exchanges. 
         # NOTE lang is universally in lowecase from the API call. 
         if lang == 'cpp': 
             self.channel.exchange_declare(
                 exchange=settings.CPP_CODE_SUBMISSION_EXCHANGE_NAME,
                 exchange_type=settings.CPP_CODE_SUBMISSION_EXCHANGE_TYPE,
             )
-            # declare queue
             self.channel.queue_declare(queue=settings.CPP_CODE_SUBMISSION_QUEUE_NAME)
-            
-            # binding exchange and queue
+        
             self.channel.queue_bind(
                 settings.CPP_CODE_SUBMISSION_QUEUE_NAME,
                 settings.CPP_CODE_SUBMISSION_EXCHANGE_NAME,

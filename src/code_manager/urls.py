@@ -38,7 +38,7 @@ doc_schema_view = get_schema_view(
 
 
 urlpatterns = [
-    path("redoc/", doc_schema_view.with_ui("redoc", cache_timeout=0)),
+    path("doc/", doc_schema_view.with_ui("redoc", cache_timeout=0)),
     path(settings.ADMIN_URL, admin.site.urls),
     # code_display app urls
     path("api/v1/problems/", include("core_apps.code_display.urls")),

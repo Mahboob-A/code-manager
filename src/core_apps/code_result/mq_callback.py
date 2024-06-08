@@ -40,8 +40,6 @@ def callback(channel, method, properties, body):
         # body is in bytes. decodes to str then as dict
         result_data = json.loads(body.decode("utf-8"))
 
-        # TODO  SLEEP is only for demonstrating the Long Polling Only. Remove the SLEEP.
-        # time.sleep(50)
 
         # cached for immediate polling
         submission_id = result_data.get("submission_id")
@@ -50,21 +48,21 @@ def callback(channel, method, properties, body):
             name=submission_id, time=settings.REDIS_CACHE_TIME_IN_SECONDS
         )  # currently 15 seconds
 
-        # saved in mongodb for persistence.
+        # saved in mongodb 
         mongo_result_collection.insert_one(result_data)
 
         username = result_data["user_details"].get("username")
         logger.info(
-            f"[Code Result Consume Success]: Code Result Consume Successful for Username: {username}"
+            f"\n\n[Code Result Consume Success]: Code Result Consume Successful for Username: {username}"
         )
     except Exception as e:
         logger.exception(
-            f"[MQ Callback EXCEPTION]: Exception Occurred at Callback.\n[EXCEPTION]: {str(e)}"
+            f"\n\n[MQ Callback EXCEPTION]: Exception Occurred at Callback while Consuming Code EXEC Results\n[EXCEPTION]: {str(e)}"
         )
         logger.error("\nTraceback")
         traceback.print_exc()
 
 
 def main():
-    logger.info(f"\n[In MAIN]: In main Func of Callback.")
+    logger.info(f"\n\n[In MAIN]: In main Func of Callback.")
     result_consumer_mq.consume_messages(callback=callback)
