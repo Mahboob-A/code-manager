@@ -1,0 +1,15 @@
+#!/bin/bash 
+
+set -o errexit
+
+# set -o pipefail 
+
+set -o nounset 
+
+python /home/codemanager/app/manage.py makemigrations --no-input 
+python /home/codemanager/app/manage.py migrate --no-input 
+python /home/codemanager/app/manage.py collectstatic --no-input 
+
+
+# Run with gunicorn. 
+exec /usr/local/bin/gunicorn code_manager.wsgi:application --bind 0.0.0.0:8001 --chdir=/home/codemanager/app/ & python /home/codemanager/app/manage.py consume_messages 
