@@ -109,7 +109,7 @@ WSGI_APPLICATION = "code_manager.wsgi.application"
 #     }
 # }
 
-# TODO set prod Database
+
 DATABASES = {"default": env.db("DATABASE_URL")}
 
 
@@ -185,31 +185,3 @@ JWT_SIGNING_KEY = env("JWT_SIGNING_KEY")
 
 CORS_URLS_REGEX = r"^api/.*$"
 
-# logging
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "verbose": {
-            "format": "%(levelname)s %(name)-12s %(asctime)s %(module)s  %(process)d %(thread)d %(message)s "
-        }
-    },
-    "handlers": {
-        "console": {
-            "level": "DEBUG",
-            "class": "logging.StreamHandler",
-            "formatter": "verbose",
-        }
-    },
-    "root": {
-        "level": "INFO",
-        "handlers": ["console"],
-    },
-    # uncomment for django database query logs
-    "loggers": {
-        "django.db": {
-            "level": "DEBUG",
-            "handlers": ["console"],
-        }
-    },
-}

@@ -68,6 +68,12 @@ class ProcessData:
                     f"\n[DATA PROCESS ERROR]: No question available with the ID: {problem_id}"
                 )
                 return None, message
+            
+            # NOTE lang is made universally in lowercase in the API view. 
+            # As per job requirement for Java RCE Engine, make the lang 'java' to Uppercase 'JAVA'. 
+            if lang == 'java': 
+                lang = lang.upper()
+
             data = {
                 "user_details": user_details,
                 "submission_id": str(
