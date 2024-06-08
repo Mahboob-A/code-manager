@@ -39,7 +39,7 @@ while True:
     time.sleep(1)
 END
 
->&2 echo "PostgresSQL is available"
+>&2 echo "PostgreSQL NOTICE: >> PostgresSQL is available"
 
 # check mongbd availability  
 export MONGO_HOST=${MONGO_HOST}
@@ -77,6 +77,6 @@ while True:
     time.sleep(1)
 END
 
->&2 echo "MongoDB is available"
+>&2 echo "MongoDB NOTICE: >> MongoDB is available"
 
 exec "$@"

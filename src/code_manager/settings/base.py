@@ -6,8 +6,8 @@ import environ
 
 env = environ.Env()
 
-# TODO CHANGE {ENVIRONMENT_TYPE} to PROD Environment
-ENVIRONMENT_TYPE = ".dev"
+# TODO  Change the env type: .dev for development. .production for production
+ENVIRONMENT_TYPE = ".production"
 
 # Build paths inside the project like this: ROOT_DIR / 'subdir'.
 # this effectively pointing to the SRC dir where the manage.py file is located.
@@ -70,6 +70,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTH_APPS + LOCAL_APPS
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "corsheaders.middleware.CorsMiddleware",  # cors middleware
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
