@@ -4,7 +4,7 @@ import time
 import traceback
 
 
-import redis
+from redis import Redis
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
 
@@ -18,10 +18,14 @@ logger = logging.getLogger(__name__)
 
 
 try:
-    redis_client = redis.Redis(host="code-manager-redis", port=6379, db=0)
+    redis_client = Redis(
+        host=settings.REDIS_CACHE_HOST,
+        port=6379,
+        db=settings.REDIS_CACHE_RESULT_DB_INDEX,  # result cache index is 0, rate limit index is 1.
+    )
 except (ImproperlyConfigured, Exception) as e:
     logger.exception(
-        f"\n[Redis Import Error]: Error Occurred During Importing Reids\n[EXCEPTION]: {str(e)}"
+        f"\n[Redis Import Error]: Error Occurred During Importing Reids at MQ_CALLBACK\n[EXCEPTION]: {str(e)}"
     )
     raise ImproperlyConfigured("Redis is not available")
 
@@ -40,31 +44,29 @@ def callback(channel, method, properties, body):
         # body is in bytes. decodes to str then as dict
         result_data = json.loads(body.decode("utf-8"))
 
-        # TODO  SLEEP is only for demonstrating the Long Polling Only. Remove the SLEEP.
-        # time.sleep(50)
-
         # cached for immediate polling
         submission_id = result_data.get("submission_id")
         redis_client.set(submission_id, json.dumps(result_data))  #save as json 
         redis_client.expire(
-            name=submission_id, time=settings.REDIS_CACHE_TIME_IN_SECONDS
+            name=submission_id,
+            time=settings.REDIS_CODE_EXEC_RESULT_CACHE_TIME_IN_SECONDS,
         )  # currently 15 seconds
 
-        # saved in mongodb for persistence.
+        # saved in mongodb
         mongo_result_collection.insert_one(result_data)
 
         username = result_data["user_details"].get("username")
         logger.info(
-            f"[Code Result Consume Success]: Code Result Consume Successful for Username: {username}"
+            f"\n\n[Code Result Consume Success]: Code Result Consume Successful for Username: {username}"
         )
     except Exception as e:
         logger.exception(
-            f"[MQ Callback EXCEPTION]: Exception Occurred at Callback.\n[EXCEPTION]: {str(e)}"
+            f"\n\n[MQ Callback EXCEPTION]: Exception Occurred at Callback while Consuming Code EXEC Results\n[EXCEPTION]: {str(e)}"
         )
         logger.error("\nTraceback")
         traceback.print_exc()
 
 
 def main():
-    logger.info(f"\n[In MAIN]: In main Func of Callback.")
+    logger.info(f"\n\n[In MAIN]: In main Func of Callback.")
     result_consumer_mq.consume_messages(callback=callback)

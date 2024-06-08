@@ -2,14 +2,16 @@
 
 set -o errexit
 
-set -o pipefail 
+# set -o pipefail 
 
 set -o nounset 
 
 python manage.py makemigrations --no-input 
 python manage.py migrate --no-input 
 python manage.py collectstatic --no-input 
-# python manage.py runserver 0.0.0.0:8000 & # run the dev server 
+
+# python manage.py runserver 0.0.0.0:8001 & # run the dev server 
 # python manage.py consume_messages  # start consuming messages 
-python manage.py consume_messages & 
-exec /usr/local/bin/gunicorn code_manager.wsgi --bind 0.0.0.0:1997 --chdir=/app
+
+# Run with gunicorn. 
+exec /usr/local/bin/gunicorn code_manager.wsgi:application --bind 0.0.0.0:8001 --chdir=/app --reload & python /app/manage.py consume_messages 

@@ -57,15 +57,15 @@ class CodeEXECResultConsumerMQ(CloudAMQPHandler):
             )
 
             logger.info(
-                f"\n[MQ Consume BEGIN]: Message Consumption from Result Publish Queue Started."
+                f"\n\n[MQ Consume BEGIN]: Message Consumption from Result Publish Queue Started."
             )
             self.channel.start_consuming()
             logger.info(
-                f"\n[MQ Consume SUCCESS]: Message Consuming Finished from Result Publish Queue."
+                f"\n\n[MQ Consume SUCCESS]: Message Consuming Finished from Result Publish Queue."
             )
         except Exception as e:
             logger.exception(
-                f"\n[MQ Consumer EXCEPTION]: Exception Occurred During Cnsuming Messages from Result Publish MQ\n[EXCEPTION]: {str(e)}\n"
+                f"\n\n[MQ Consumer EXCEPTION]: Exception Occurred During Cnsuming Messages from Result Publish MQ\n[EXCEPTION]: {str(e)}\n"
             )
 
 

@@ -77,6 +77,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "core_apps.code_submit.RateLimitMiddleware.CodeSubmitAPIRateLimitMiddleware", # middleware for rate limiting. (3 requsts per 60 sec)
 ]
 
 ROOT_URLCONF = "code_manager.urls"
@@ -110,7 +111,7 @@ WSGI_APPLICATION = "code_manager.wsgi.application"
 #     }
 # }
 
-# TODO set prod Database
+
 DATABASES = {"default": env.db("DATABASE_URL")}
 
 
@@ -185,32 +186,3 @@ REST_FRAMEWORK = {
 JWT_SIGNING_KEY = env("JWT_SIGNING_KEY")
 
 CORS_URLS_REGEX = r"^api/.*$"
-
-# logging
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "verbose": {
-            "format": "%(levelname)s %(name)-12s %(asctime)s %(module)s  %(process)d %(thread)d %(message)s "
-        }
-    },
-    "handlers": {
-        "console": {
-            "level": "DEBUG",
-            "class": "logging.StreamHandler",
-            "formatter": "verbose",
-        }
-    },
-    "root": {
-        "level": "INFO",
-        "handlers": ["console"],
-    },
-    # uncomment for django database query logs
-    "loggers": {
-        "django.db": {
-            "level": "DEBUG",
-            "handlers": ["console"],
-        }
-    },
-}

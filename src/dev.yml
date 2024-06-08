@@ -10,15 +10,13 @@ services:
       - .:/app:z 
       - static_volume:/app/staticfiles
       - media_volume:/app/mediafiles 
-    expose: 
-      - "8000"
     env_file: 
       - ./.envs/.dev/.django
       - ./.envs/.dev/.postgres
       - ./.envs/.dev/.mongo
     depends_on: 
       - postgres 
-      - code-manager-redis
+      - codemanager-cache-redis
     command: /start  # start command to start the dev server and consume messages from mq 
     networks: 
       - algocode-code-manager-network
@@ -51,8 +49,10 @@ services:
     command: mongod --dbpath /data/db 
     networks:
       - algocode-code-manager-network
-      
-  code-manager-redis: 
+    
+  # Using a single redis instance for result cache and rate limiting as the server is limited on 1GB ram. 
+  # But if scale is needed, create another redis instance for rate limiting and update the Middleware. 
+  codemanager-cache-redis: 
     image: redis:7-alpine
     networks: 
       - algocode-code-manager-network
