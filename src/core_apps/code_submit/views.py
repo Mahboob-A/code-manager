@@ -113,14 +113,14 @@ class SubmitCode(APIView):
 
         if not isinstance(lang, str): 
             message = 'invalid-language-error'
-            return self.process_error_response(message=message)
+            return self.process_error_response(lang=lang, message=message)
 
         # NOTE making the lang universally lowercase. 
         lang = lang.lower()
         
         if lang not in ['cpp', 'java']: 
             message = 'invalid-language-error'
-            return self.process_error_response(message=message)
+            return self.process_error_response(lang=lang, message=message)
 
         # process the data that needs to be publish to the MQ.
         data, message = data_processor.process_data(

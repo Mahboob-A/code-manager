@@ -27,8 +27,8 @@ services:
       dockerfile: ./docker/production/postgres/Dockerfile
     image: postgres-codemanger-image
     volumes: 
-      - production_codemanager_postgres_data:/var/lib/postgresql/data
-      - production_codemanager_postgres_data_backups:/backups
+      - production_codemanager_postgres_new_data:/var/lib/postgresql/data
+      - production_codemanager_postgres_new_data_backups:/backups
     env_file: 
       - ./.envs/.production/.postgres 
     networks: 
@@ -68,8 +68,8 @@ networks:
 volumes: 
   production_codemanager_api_static_volume: {} 
   production_codemanager_api_media_volume: {} 
-  production_codemanager_postgres_data: {}
-  production_codemanager_postgres_data_backups: {}
+  production_codemanager_postgres_new_data: {}
+  production_codemanager_postgres_new_data_backups: {}
   production_codemanager_mongo_data: {}
   production_codemanager_mongo_logs: {}
 
