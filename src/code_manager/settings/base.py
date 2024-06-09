@@ -71,12 +71,13 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "corsheaders.middleware.CorsMiddleware",  # cors middleware
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "core_apps.code_submit.RateLimitMiddleware.CodeSubmitAPIRateLimitMiddleware", # middleware for rate limiting. (3 requsts per 60 sec)
+    "core_apps.code_submit.RateLimitMiddleware.CodeSubmitAPIRateLimitMiddleware",  # middleware for rate limiting. (3 requsts per 60 sec)
 ]
 
 ROOT_URLCONF = "code_manager.urls"

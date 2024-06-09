@@ -37,7 +37,7 @@ REDIS_RATE_LIMIT_CACHE_TIME_IN_SECONDS = int(
     env("REDIS_RATE_LIMIT_CACHE_TIME_IN_SECONDS")
 )
 
-# Code Submit API path. 
+# Code Submit API path.
 CODE_SUBMIT_API_PATH = "/api/v1/code/submit/"
 
 # Config for MQ: Code Submission Publish
@@ -75,6 +75,8 @@ MONGO_PASS = env("MONGO_INITDB_ROOT_PASSWORD")
 MONGO_RESULT_COLLECTIOIN = env("MONGO_INITDB_COLLECTION")
 MONGO_AUTH_SOURCE_DB = env("MONGO_AUTH_SOURCE_DB")
 
+# Serving static contents using whitenoise in Development aslo. 
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # AWS is Discarded.
 # AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
