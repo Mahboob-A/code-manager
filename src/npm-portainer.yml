@@ -1,0 +1,69 @@
+
+# This compose file shold be run inside the server. 
+# docker compose for nginx reverse proxy and portainer. see nginx reverse proxy documentation for more advanced settings.  
+# create the network if already not created. 
+# copy the compose file in the specified dir in the server or in the /opt/create_a_dir cd to new_dir and then run the compose file. 
+# docker compose -p algocode_cm_service_monitor -f npm-portainer.yml up -d --remove-orphans 
+# NOTE: put the correct compose file name after -f flag. 
+
+services:
+  app:
+    image: jc21/nginx-proxy-manager:latest
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "81:81"
+      - "443:443"
+    volumes:
+      - production_algocode_cm_npm_data:/data  # npm nginx proxy manager
+      - production_algocode_cm_npm_letsencrypt_data:/etc/letsencrypt
+    networks:
+      - production-algocode-auth-service-network
+      
+  portainer:
+    image: portainer/portainer-ce:latest 
+    privileged: true
+    volumes:
+      - production_algocode_cm_portainer_data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports: 
+      - "8000:8000"
+      - "9443:9443"
+      - "9000:9000"
+    restart: always
+    networks:
+      - production-algocode-auth-service-network
+      - production-algocode-rcee-service-network
+
+
+
+# TODO Create the Network in the EC2 Server. WIthin this network, the Code Manager Service (production.yml) is Running. 
+networks:
+  production-codemanager-network:
+   external: true
+
+volumes:
+  production_algocode_cm_portainer_data: {}
+  production_algocode_cm_npm_data: {}
+  production_algocode_cm_npm_letsencrypt_data: {}
+
+
+
+
+
+
+  # To test production stage in local, add this in the production.yml  
+  # nginx: 
+  #   build: 
+  #     context: . 
+  #     dockerfile: ./docker/production/nginx/Dockerfile
+  #   restart: always
+  #   depends_on: 
+  #     - code-manager
+  #   volumes: 
+  #     - production_codemanager_api_static_volume:/app/staticfiles
+  #     - production_codemanager_api_media_volume:/app/mediafiles 
+  #   ports: 
+  #     - "8080:80"
+  #   networks: 
+  #     - production-codemanager-network
