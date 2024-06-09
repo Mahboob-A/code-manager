@@ -40,8 +40,11 @@ doc_schema_view = get_schema_view(
 urlpatterns = [
     path("doc/", doc_schema_view.with_ui("redoc", cache_timeout=0)),
     path(settings.ADMIN_URL, admin.site.urls),
+    
+    # common app: healthcheck api
+    path("api/v1/common/", include("core_apps.common.urls")), 
     # code_display app urls
-    path("api/v1/problems/", include("core_apps.code_display.urls")),
+    path("api/v1/problem/", include("core_apps.code_display.urls")),
     # code_submit app urls
     path("api/v1/code/", include("core_apps.code_submit.urls")),
     # code_result app urls
