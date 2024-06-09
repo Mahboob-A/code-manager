@@ -8,19 +8,19 @@ from .base import env  # noqa: E501
 ADMINS = [("Mahboob Alam", "iammahboob.a@gmail.com")]
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 ADMIN_URL = env("ADMIN_URL")
-DATABASES = {"default": env.db("DATABASE_URL")}
 
 
 # Django security settings.
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["codemanager.algocode.site"])
 
-# TODO  for testing prod locally 
+# TODO  for testing prod locally
 # ALLOWED_HOSTS = ["127.0.0.1"]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://codemanager.algocode.site",
     "https://algocode.site",
-    "http://127.0.0.1:8080",  # for testing prod locally 
+    # "http://127.0.0.1:8000",
+    # "http://127.0.0.1:8080",  # for testing prod locally
 ]
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
@@ -28,8 +28,8 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_SSL_REDIRECT = env("DJANGO_SECURE_SSL_REDIRECT", default=True)
 
 
-# TODO caution. 518400 seconds as 6 days. 
-SECURE_HSTS_SECONDS = 518400  
+# TODO caution. 518400 seconds as 6 days.
+SECURE_HSTS_SECONDS = 200
 
 SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool(
     "DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS", default=True
