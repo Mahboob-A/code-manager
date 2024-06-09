@@ -18,7 +18,7 @@ services:
       - production_algocode_cm_npm_data:/data  # npm nginx proxy manager
       - production_algocode_cm_npm_letsencrypt_data:/etc/letsencrypt
     networks:
-      - production-algocode-auth-service-network
+      - production-codemanager-network
       
   portainer:
     image: portainer/portainer-ce:latest 
@@ -32,8 +32,7 @@ services:
       - "9000:9000"
     restart: always
     networks:
-      - production-algocode-auth-service-network
-      - production-algocode-rcee-service-network
+      - production-codemanager-network
 
 
 

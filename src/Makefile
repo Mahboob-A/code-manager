@@ -25,6 +25,14 @@ docker-exec-code-manager:
 
 # ## 
 
+# ### Nginx Proxy Manager and Portainer command: 
+# in the server 
+npm-portainer: 
+	docker compose -p algocode_cm_service_monitor -f npm-portainer.yml up -d --remove-orphans 
+
+npm-portainer-down: 
+	docker compose -p algocode_cm_service_monitor -f npm-portainer.yml down  
+
 # ### Other Services  (In production, nginx proxy manager is used, nginx here is only to test production locally)
 docker-restart-nginx: 
 	docker compose -p code_manager -f production.yml restart nginx 
