@@ -66,9 +66,15 @@ The Algocode Code Manager Services uses the following services to serve the requ
 
     a. Nginx as webserver.
     b. Nginx Proxy Manager to manage Nginx.
-    c. Portainer to manage and monitor docker container in Auth Service. 
-    b. Gunicorn as application server.
-    d. RabbitMQ for asynchronous message processig.
+    c. Portainer to manage and monitor docker container in Code Manager Service. 
+    d. Gunicorn as application server.
+    e. RabbitMQ for asynchronous message processig.
+    f. Django as backend. 
+    g. Django Rest Framework for API. 
+    h. PostgreSQL for Algocode questions/problems database.
+    i. Redis for cache. 
+    j. MongoDB to store code execution result.
+    k. Docker to containerize the service. 
 
 #### Deployment
 
