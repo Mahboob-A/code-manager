@@ -42,7 +42,7 @@ To learn more about _Algocode and the architecture_, please `READ-THE-BLOG-URL` 
 
 **B. Documentation**
 
-Please visit <a href="https://cm-doc.algocode.site/doc/">this documentation page</a>  for the detailed guide on Algocode Auth Service.
+Please visit the <a href="https://cm-doc.algocode.site/doc/">documentation page</a>  for the detailed guide on Algocode Code Manager Service.
 
 > However, all the APIs are referenced in the **_API Reference_** section below.
 
@@ -89,7 +89,7 @@ The client can not directly interact with the <a href="https://github.com/Mahboo
 
 ##### Workflow 
 
-The user submits the solution of the problem they want to submit through the `code submission API`. The API processes the data and publishes the data in a RabbitMQ instance. The <a href="https://github.com/Mahboob-A/rcee/">RCE Engine Service</a> consumes the message and `executes the user submitted code` and `generates a result` comparing the `testcases` and the output of the `user submitted code`. 
+The user submits the solution of the problem they want to submit through the `code submission API`. The API processes the data and publishes the data in a`RabbitMQ instance`. The <a href="https://github.com/Mahboob-A/rcee/">RCE Engine Service</a> consumes the message and `executes the user submitted code` and `generates a result` comparing the `testcases` and the output of the `user submitted code`. 
 
 Once a result is generated, the RCE Engine publishes the `code execution result` to a `unified result queue`, Code Manager Services listens to the `unified result queue`. 
 
